@@ -74,20 +74,6 @@
    pdm add new-package
    ```
 
-## 测试
-
-1. 前端
-
-   ```bash
-   pnpm dev
-   ```
-
-2. 后端
-
-   ```bash
-   python manage.py runserver 0.0.0.0:port
-   ```
-
 ## 代码风格
 
 请注意进行 Code Lint 确保代码符合相关标准（如`PEP8`或`Black`）。
