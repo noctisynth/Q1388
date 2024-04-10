@@ -2,7 +2,7 @@ from django.http import HttpRequest, JsonResponse
 from account.models import UserAccount
 from product.models import Product
 from product.views import product2dict
-from .models import CartItem
+from .models import CartItem, Cart
 import json
 from django.views.decorators.csrf import csrf_exempt
 
@@ -38,10 +38,14 @@ def add(request: HttpRequest):
                 return JsonResponse({"status": 400, "message": "商品ID错误"})
 
             ua = UserAccount.objects.get(username=ua_session)
-            product = Product.objects.get(id=product_id)
+            try:
+                product = Product.objects.get(id=product_id)
+            except:
+                return JsonResponse({"status": 400, "message": "商品ID不存在"})
 
             try:
-                cart_item = CartItem.objects.get(user=ua, product=product)
+                cart = Cart.objects.get(user=ua)
+                cart_item = CartItem.objects.get(cart=cart, product=product)
                 cart_item.quantity += quantity
                 if cart_item.quantity < 0:
                     cart_item.quantity = 0
@@ -49,8 +53,10 @@ def add(request: HttpRequest):
                 cart_item.save()
 
             except:
+                cart, _ = Cart.objects.get_or_create(user=ua)
+
                 cart_item = CartItem()
-                cart_item.user = ua
+                cart_item.cart = cart
                 cart_item.product = product
                 cart_item.quantity = quantity
                 cart_item.save()
@@ -91,11 +97,15 @@ def remove(request: HttpRequest):
             try:
                 product = Product.objects.get(id=product_id)
             except:
+                return JsonResponse({"status": 400, "message": "商品ID错误"})
+
+            cart, _ = Cart.objects.get_or_create(user=ua)
+            try:
+                cart_item = cart.cartitem_set.get(product=product)
+            except:
                 return JsonResponse(
                     {"status": 400, "message": "该商品并不在您的购物车"}
                 )
-
-            cart_item = CartItem.objects.get(user=ua, product=product)
 
             if cart_item:
                 if number == -1:
@@ -121,7 +131,8 @@ def all(request: HttpRequest):
     ua_session = request.session.get("uname")
     if ua_session:
         ua = UserAccount.objects.get(username=ua_session)
-        cart_items = CartItem.objects.filter(user=ua)
+        cart, _ = Cart.objects.get_or_create(user=ua)
+        cart_items = cart.cartitem_set.all()
         total_price = sum(cart_item.subtotal for cart_item in cart_items)
         cart_items_list = []
         for c in cart_items:

@@ -2,11 +2,14 @@ from django.db import models
 from account.models import UserAccount
 from product.models import Product
 
+
 # Create your models here.
+class Cart(models.Model):
+    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
 
 
 class CartItem(models.Model):
-    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
 
