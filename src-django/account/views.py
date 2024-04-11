@@ -1,6 +1,5 @@
-from django.shortcuts import render
 from django.http import HttpRequest, JsonResponse
-from .models import UserAccount
+from .models import UserAccount, UserAddress
 import json
 from django.views.decorators.csrf import csrf_exempt
 
@@ -92,7 +91,7 @@ def update(request: HttpRequest):
         "password":"e10adc3949ba59abbe56e057f20f883e",
         "email":"123@admin.com",
         "avator":"new.jpg",
-        "addresses":"123/123/afd!@#$fawbqer/qwebrqbwerbq/qbwer",
+        "addresses":["213","123"],
         "default_address":"123/123/afd"
     }
     不需要更新的直接留空
@@ -109,8 +108,8 @@ def update(request: HttpRequest):
                 password: str = data.get("password", "")
                 email: str = data.get("email", "")
                 avatar: str = data.get("avatar", "")
-                addresses: str = data.get("addresses", "")
                 default_address: str = data.get("default_address", "")
+                addresses: list = data.get("addresses", [])
 
                 if password:
                     ua.password = password
@@ -118,11 +117,17 @@ def update(request: HttpRequest):
                     ua.email = email
                 if avatar:
                     ua.avatar = avatar
-                if addresses:
-                    ua.addresses = addresses
                 if default_address:
                     ua.default_address = default_address
 
+                if addresses:
+                    d = ua.addresses
+                    for a in addresses:
+                        if a not in d:
+                            user_adress = UserAddress()
+                            user_adress.user = ua
+                            user_adress.location = a
+                            user_adress.save()
                 ua.save()
 
                 return JsonResponse({"status": 200, "message": "更新成功"})
@@ -144,12 +149,12 @@ def profile(request: HttpRequest):
     if ua_session:
         ua = UserAccount.objects.get(username=ua_session)
         data = {
-            "status":200,
+            "status": 200,
             "username": ua.username,
             "email": ua.email,
             "avatar": ua.avatar,
             "default_address": ua.default_address,
-            "addresses": ua.addresses.split("!@#$"),
+            "addresses": ua.addresses,
         }
 
         return JsonResponse(data)
