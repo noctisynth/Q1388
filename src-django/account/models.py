@@ -13,6 +13,13 @@ class UserAccount(models.Model):
         max_length=200, verbose_name="默认地址", default=""
     )
 
+    class Meta:
+        verbose_name = "用户"
+        verbose_name_plural = "用户"
+
+    def __str__(self):
+        return self.username
+
     @property
     def addresses(self):
         address_list = []
@@ -22,5 +29,12 @@ class UserAccount(models.Model):
 
 
 class UserAddress(models.Model):
-    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, verbose_name="用户")
     location = models.CharField(max_length=100, verbose_name="地址")
+
+    class Meta:
+        verbose_name = "用户地址"
+        verbose_name_plural = "用户地址"
+
+    def __str__(self):
+        return self.location
