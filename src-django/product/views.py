@@ -1,5 +1,10 @@
 from django.http import HttpRequest, JsonResponse
+from django.shortcuts import render
+
 from .models import Product
+from order.models import Order
+from account.models import UserAccount
+
 import json
 from django.views.decorators.csrf import csrf_exempt
 
@@ -63,3 +68,12 @@ def search(request: HttpRequest, some):
 
     else:
         return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
+
+
+def report(request: HttpRequest):
+    data = {
+        "useraccount_count": UserAccount.objects.count(),
+        "product_count": Product.objects.count(),
+        "order_count": Order.objects.count(),
+    }
+    return render(request, "report.html", data)

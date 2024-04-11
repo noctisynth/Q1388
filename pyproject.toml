@@ -6,6 +6,7 @@ authors = [
 ]
 dependencies = [
     "django>=4.2.11",
+    "django-simpleui>=2024.4.1",
 ]
 requires-python = ">=3.8"
 readme = "README.md"
