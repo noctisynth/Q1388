@@ -16,6 +16,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(auto_now_add=True)
+    address = models.CharField(max_length=200)
 
 
 class OrderItem(models.Model):

@@ -23,6 +23,7 @@ def order2dict(order: Order):
         "status": order.status,
         "total_price": order.total_price,
         "date": order.date,
+        "address":order.address,
         "order_items": order_items,
     }
 
@@ -43,6 +44,8 @@ def checkout(request: HttpRequest):
                 order.total_price = 0
                 for cart_item in cart.cartitem_set.all():
                     order.total_price += cart_item.subtotal * cart_item.quantity
+
+                order.address = ua.default_address
                 order.user = ua
                 order.save()
 
