@@ -3,6 +3,8 @@ from .models import Order, OrderItem
 from account.models import UserAccount
 from shopping_cart.models import Cart, CartItem
 from product.views import product2dict
+import json
+from typing import Tuple
 
 # Create your views here.
 
@@ -23,7 +25,7 @@ def order2dict(order: Order):
         "status": order.status,
         "total_price": order.total_price,
         "date": order.date,
-        "address":order.address,
+        "address": order.address,
         "order_items": order_items,
     }
 
@@ -118,6 +120,34 @@ def all(request: HttpRequest):
 
             return JsonResponse({"status": 200, "orders": orders_list})
 
+        except:
+            return JsonResponse({"status": 400, "message": "订单不存在"})
+    else:
+        return JsonResponse({"status": 403, "message": "用户未登录"})
+
+
+def pay(request: HttpRequest, order_id):
+    """
+    // paypal
+    {
+        "type":"default",
+        "order_id":1
+    }
+    """
+    ua_session = request.session.get("uname")
+
+    if ua_session:
+        try:
+            data: dict = json.loads(request.body.decode())
+        except:
+            return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
+        try:
+            ua = UserAccount.objects.get(username=ua_session)
+
+            order = Order.objects.get(user=ua, id=order_id)
+            order.status = "Paid"
+            order.save()
+            return JsonResponse({"status": 200, "message": "支付成功"})
         except:
             return JsonResponse({"status": 400, "message": "订单不存在"})
     else:
