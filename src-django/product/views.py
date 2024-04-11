@@ -11,7 +11,7 @@ def product2dict(p: Product):
         "price": p.price,
         "quantity": p.quantity,
         "spec_param": p.spec_param,
-        "category": p.category,
+        "categories": p.get_categories(),
         "comment": p.comment,
         "detail": p.detail,
         "pictures": p.pictures,
@@ -52,7 +52,7 @@ def search(request: HttpRequest, some):
 
                 for p in products:
                     for d in description_list:
-                        if d in p.category:
+                        if d in p.get_categories():
                             products_list.append(product2dict(p))
                             break
                 return JsonResponse({"status": 200, "products": products_list})
