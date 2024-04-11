@@ -12,15 +12,30 @@ class Order(models.Model):
         ("Completed", "Completed"),
         ("Cancelled", "Cancelled"),
     )
-    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateTimeField(auto_now_add=True)
-    address = models.CharField(max_length=200)
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, verbose_name="用户")
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="Pending",
+        verbose_name="订单状态",
+    )
+    total_price = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name="总价格"
+    )
+    date = models.DateTimeField(auto_now_add=True, verbose_name="日期")
+    address = models.CharField(max_length=200, verbose_name="地址")
+
+    class Meta:
+        verbose_name = "订单"
+        verbose_name_plural = "订单"
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="订单")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="产品")
+    quantity = models.IntegerField(verbose_name="数量")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="价格")
+
+    class Meta:
+        verbose_name = "订单内容"
+        verbose_name_plural = "订单内容"
