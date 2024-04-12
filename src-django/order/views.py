@@ -1,12 +1,12 @@
 from django.http import HttpRequest, JsonResponse
-from .models import Order, OrderItem
 from account.models import UserAccount
-from shopping_cart.models import Cart, CartItem
+from shopping_cart.models import Cart
 from product.views import product2dict
-import json
-from typing import Tuple
+from utils.session import verify_session
 
-# Create your views here.
+from .models import Order, OrderItem
+
+import json
 
 
 def order2dict(order: Order):
@@ -31,9 +31,9 @@ def order2dict(order: Order):
 
 
 def checkout(request: HttpRequest):
-    ua_session = request.session.get("uname")
+    ua_session = request.session.get("token")
 
-    if ua_session:
+    if verify_session(ua_session):
         try:
             ua = UserAccount.objects.get(username=ua_session)
 
