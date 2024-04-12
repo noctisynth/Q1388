@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "runserver": "pdm run src-django/manage.py runserver"
+    "runserver": "pdm run src-django/manage.py runserver",
+    "migrate": "pdm run src-django/manage.py migrate",
+    "makemigrations": "pdm run src-django/manage.py makemigrations"
   },
   "dependencies": {
     "pinia": "^2.1.7",
