@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.contrib.auth.hashers import make_password, check_password
 from django.http import HttpRequest, JsonResponse
-from .models import UserAccount
-import json
 from django.views.decorators.csrf import csrf_exempt
 
-# Create your views here.
+from .models import Session, UserAccount
+
+import json
 
 
 @csrf_exempt
@@ -53,23 +53,28 @@ def login(request: HttpRequest):
     }
     """
     if request.method == "POST":
-
-        ua_session = request.session.get("uname")
-        if ua_session:
+        session_key = request.session.get("token")
+        session = Session.objects.filter(session_key=session_key)
+        if session.count() != 0:
             return JsonResponse({"status": 201, "message": "用户已登录"})
 
         try:
-            data = json.loads(request.body.decode())
-            username: str = data.get("username", "")
-            password: str = data.get("password", "")
+            username = request.POST.get("username")
+            password = request.POST.get("password")
 
-            if username == "" or password == "":
+            if not username or not password:
                 return JsonResponse({"status": 402, "message": "参数错误"})
             else:
                 if UserAccount.objects.filter(username=username).exists():
                     ua = UserAccount.objects.get(username=username)
-                    if ua.password == password:
-                        request.session["uname"] = username
+                    if check_password(password, ua.password):
+                        session = Session.objects.filter(
+                            account_username=ua.username
+                        ).first() or Session.objects.create(
+                            session_key=make_password(request.session.session_key),
+                            account=ua,
+                        )
+                        request.session["token"] = session.session_key
                         request.session.save()
                         return JsonResponse({"status": 200, "messag": "登陆成功"})
                     else:
@@ -144,7 +149,7 @@ def profile(request: HttpRequest):
     if ua_session:
         ua = UserAccount.objects.get(username=ua_session)
         data = {
-            "status":200,
+            "status": 200,
             "username": ua.username,
             "email": ua.email,
             "avatar": ua.avatar,
