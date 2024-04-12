@@ -59,8 +59,10 @@ def login(request: HttpRequest):
             return JsonResponse({"status": 201, "message": "用户已登录"})
 
         try:
-            username = request.POST.get("username")
-            password = request.POST.get("password")
+            data: dict = json.loads(request.body.decode())
+
+            username = data.get("username")
+            password = data.get("password")
 
             if not username or not password:
                 return JsonResponse({"status": 402, "message": "参数错误"})
