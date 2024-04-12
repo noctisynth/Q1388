@@ -1,14 +1,8 @@
-<<<<<<< HEAD
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import HttpRequest, JsonResponse
-=======
-from django.http import HttpRequest, JsonResponse
-from .models import UserAccount, UserAddress
-import json
->>>>>>> main
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Session, UserAccount
+from .models import Session, UserAccount, UserAddress
 
 import json
 
