@@ -1,3 +1,4 @@
+from enum import verify
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -71,7 +72,7 @@ def login(request: HttpRequest):
                     ua = UserAccount.objects.get(username=username)
                     if check_password(password, ua.password):
                         session = Session.objects.filter(
-                            account_username=ua.username
+                            account=ua
                         ).first() or Session.objects.create(
                             session_key=make_password(request.session.session_key),
                             account=ua,
@@ -85,7 +86,8 @@ def login(request: HttpRequest):
                 else:
                     return JsonResponse({"status": 404, "message": "用户不存在"})
 
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
 
     else:
@@ -106,10 +108,11 @@ def update(request: HttpRequest):
     """
     if request.method == "POST":
 
-        ua_session = request.session.get("uname")
-
-        if ua_session:
-            ua = UserAccount.objects.get(username=ua_session)
+        session_key = request.session.get("token")
+        session = Session.objects.filter(session_key=session_key)
+        if session.count() != 0:
+            s = session[0]
+            ua = s.account
             try:
                 data = json.loads(request.body.decode())
                 # password, email, avator, addresses
@@ -120,7 +123,7 @@ def update(request: HttpRequest):
                 addresses: list = data.get("addresses", [])
 
                 if password:
-                    ua.password = password
+                    ua.password = make_password(password)
                 if email:
                     ua.email = email
                 if avatar:
@@ -152,10 +155,11 @@ def update(request: HttpRequest):
 
 @csrf_exempt
 def profile(request: HttpRequest):
-    ua_session = request.session.get("uname")
-
-    if ua_session:
-        ua = UserAccount.objects.get(username=ua_session)
+    session_key = request.session.get("token")
+    session = Session.objects.filter(session_key=session_key)
+    if session.count() != 0:
+        s = session[0]
+        ua = s.account
         data = {
             "status": 200,
             "username": ua.username,
@@ -169,3 +173,14 @@ def profile(request: HttpRequest):
 
     else:
         return JsonResponse({"status": 403, "message": "用户未登录"})
+
+
+@csrf_exempt
+def logout(request: HttpRequest):
+    session_key = request.session.get("token")
+    session = Session.objects.filter(session_key=session_key)
+    if session.count() != 0:
+        for s in session:
+            s.delete()
+
+    return JsonResponse({"status": 200, "message": "退出成功"})

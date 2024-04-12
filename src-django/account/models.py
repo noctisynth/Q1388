@@ -23,7 +23,7 @@ class UserAccount(models.Model):
     @property
     def addresses(self):
         address_list = []
-        for a in self.useraddress_set.all():
+        for a in self.useraddress_set.all():  # type: ignore
             address_list.append(a.location)
         return address_list
 
