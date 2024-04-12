@@ -9,10 +9,24 @@ class UserAccount(models.Model):
     password = models.CharField(max_length=50, verbose_name="密码", null=False)
     email = models.EmailField(max_length=254, verbose_name="邮件", default="")
     avatar = models.CharField(max_length=254, verbose_name="头像", default="")
+<<<<<<< HEAD
+    addresses = models.CharField(max_length=2000, verbose_name="地址", default="")
+=======
+>>>>>>> main
     default_address = models.CharField(
         max_length=200, verbose_name="默认地址", default=""
     )
 
+<<<<<<< HEAD
+
+class Session(models.Model):
+    session_key = models.CharField(
+        max_length=39, verbose_name="会话密钥", null=False, unique=True
+    )
+    account = models.ForeignKey(
+        "UserAccount", on_delete=models.CASCADE, related_name="session", null=False
+    )
+=======
     class Meta:
         verbose_name = "用户"
         verbose_name_plural = "用户"
@@ -38,3 +52,4 @@ class UserAddress(models.Model):
 
     def __str__(self):
         return self.location
+>>>>>>> main
