@@ -2,6 +2,9 @@
 import Button from "primevue/button";
 import { ref } from "vue";
 
+const light = ref<boolean>(!window.matchMedia('(prefers-color-scheme: dark)'));
+console.log(light.value)
+
 const items = ref([
   {
     label: '主页',
@@ -185,7 +188,7 @@ const products = ref([
         </DataView>
       </div>
     </div>
-    <div class="flex w-full flex-col justify-center items-center dark:bg-green-100 mt-3rem pt-2rem"
+    <div :class="[(light ? '!bg-gray-100' : ''), 'flex w-full flex-col justify-center items-center mt-3rem pt-2rem']"
       style="background-color: var(--p-menubar-background);">
       <div class="w-full flex flex-row justify-end px-3">
         <Button icon="pi pi-discord" plain text></Button>
