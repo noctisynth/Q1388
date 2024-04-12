@@ -55,11 +55,6 @@ const responsiveOptions = ref([
     numScroll: 1
   },
   {
-    breakpoint: '1199px',
-    numVisible: 3,
-    numScroll: 1
-  },
-  {
     breakpoint: '767px',
     numVisible: 2,
     numScroll: 1
@@ -94,9 +89,9 @@ const responsiveOptions = ref([
     </Menubar>
     <div class="flex justify-center">
       <div class="w-full max-w-960px">
-        <Carousel :value="products" :numVisible="3" :numScroll="3" :responsiveOptions="responsiveOptions">
+        <Carousel :value="products" :numVisible="3" :numScroll="3" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
           <template #item="slotProps">
-            <div class="border-1 surface-border border-round m-2  p-3">
+            <div class="border-1 surface-border border-round m-2 p-3">
               <div class="mb-3">
                 <div class="relative mx-auto">
                   <img :src="'https://primefaces.org/cdn/primevue/images/product/' + slotProps.data.image"
@@ -106,11 +101,11 @@ const responsiveOptions = ref([
                 </div>
               </div>
               <div class="mb-3 font-medium">{{ slotProps.data.name }}</div>
-              <div class="flex justify-content-between align-items-center">
+              <div class="flex justify-between items-center">
                 <div class="mt-0 font-semibold text-xl">${{ slotProps.data.price }}</div>
                 <span>
-                  <Button icon="pi pi-heart" severity="secondary" outlined />
-                  <Button icon="pi pi-shopping-cart" class="ml-2" />
+                  <Button icon="pi pi-heart" severity="secondary" outlined></Button>
+                  <Button icon="pi pi-shopping-cart" class="ml-2"></Button>
                 </span>
               </div>
             </div>
