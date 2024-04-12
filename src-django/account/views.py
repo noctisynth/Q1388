@@ -26,7 +26,7 @@ def add(request: HttpRequest):
         password: str = data.get("password", "")
         email: str = data.get("email", "")
 
-        if username == "" or password == "" or email == "":
+        if not all([username, password, email]):
             return JsonResponse({"status": 402, "message": "参数错误"})
 
         else:
@@ -35,7 +35,7 @@ def add(request: HttpRequest):
             else:
                 ua = UserAccount()
                 ua.username = username
-                ua.password = password
+                ua.password = make_password(password)
                 ua.email = email
                 ua.avatar = "default_avatar.jpg"
                 ua.save()
