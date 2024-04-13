@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 def product2dict(p: Product):
     return {
-        "id": p.id,
+        "id": p.id,  # type: ignore
         "name": p.name,
         "price": p.price,
         "quantity": p.quantity,
