@@ -1,4 +1,5 @@
 from enum import verify
+from turtle import ht
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -184,3 +185,24 @@ def logout(request: HttpRequest):
             s.delete()
 
     return JsonResponse({"status": 200, "message": "退出成功"})
+
+
+@csrf_exempt
+def del_address(request: HttpRequest):
+    session_key = request.session.get("token")
+    session = Session.objects.filter(session_key=session_key)
+    if session.count() != 0:
+        s = session[0]
+        ua = s.account
+        try:
+            data = json.loads(request.body.decode())
+            address: str = data.get("address", "")
+
+            a = UserAddress.objects.get(user=ua, location=address)
+            a.delete()
+            return JsonResponse({"status": 200, "message": "删除成功"})
+        except:
+            return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
+
+    else:
+        return JsonResponse({"status": 403, "message": "用户未登录"})
