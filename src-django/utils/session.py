@@ -1,7 +1,10 @@
 from typing import Any
-from account.models import Session
+from account.models import Session, UserAccount
 
 
-def verify_session(session_key: Any) -> bool:
+def verify_session(session_key: Any) -> UserAccount:
     query = Session.objects.filter(session_key=session_key)
-    return query.count() != 0
+    if query.count() != 0:
+        return query[0].account
+    else:
+        return None  # type: ignore
