@@ -1,8 +1,41 @@
 <script setup lang="ts">
+import { useTokenStore } from '@/stores/token';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
+const tokenStore = useTokenStore()
+const showLogin = ref<boolean>(false)
+
+let user_items;
+if (!tokenStore.isLoggedIn())
+    user_items = [
+        {
+            label: '登录',
+            icon: 'pi pi-sign-in',
+            command: () => {
+                showLogin.value = true
+            }
+        },
+        {
+            label: '注册',
+            icon: 'pi pi pi-plus-circle',
+            command: () => {
+                showLogin.value = true
+            }
+        }
+    ]
+else
+    user_items = [
+        {
+            label: '个人中心',
+            icon: 'pi user',
+            command: () => {
+                router.push("/profile")
+            }
+        },
+    ]
+
 const items = ref([
     {
         label: '主页',
@@ -14,16 +47,7 @@ const items = ref([
     {
         label: '用户',
         icon: 'pi pi-user',
-        items: [
-            {
-                label: '登录',
-                icon: 'pi pi-sign-in'
-            },
-            {
-                label: '注册',
-                icon: 'pi pi pi-plus-circle'
-            }
-        ]
+        items: user_items
     },
     {
         label: '产品',

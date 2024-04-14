@@ -11,8 +11,11 @@ export const useTokenStore = defineStore(
     const removeToken = () => {
       token.value = "";
     };
+    const isLoggedIn = () => {
+      return token.value !== "";
+    };
 
-    return { token, setToken, removeToken };
+    return { token, setToken, removeToken, isLoggedIn };
   },
   {
     persist: true,

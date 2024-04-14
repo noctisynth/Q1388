@@ -11,7 +11,7 @@ import PrimeOne from "primevue/themes/primeone";
 // @ts-ignore
 import Aura from "primevue/themes/primeone/aura";
 import Ripple from "primevue/ripple";
-import ToastService from 'primevue/toastservice';
+import ToastService from "primevue/toastservice";
 
 import App from "./App.vue";
 import router from "./router";
@@ -35,7 +35,6 @@ app.directive("ripple", Ripple);
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
-app.use(ToastService)
 app.use(pinia);
 app.use(router);
 app.use(ToastService);
