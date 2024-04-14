@@ -25,12 +25,13 @@ SECRET_KEY = "django-insecure-+$()uh62520ir411)lh+4-qv@(s54k8mfrm289zr74ztn9(6=@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "simpleui",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -127,3 +129,11 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SIMPLEUI_HOME_PAGE = "/product/report"
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = ["*", "Content-Type"]
+
+# for cookie
+SESSION_COOKIE_SAMESITE = "none"
+SESSION_COOKIE_SECURE = True
