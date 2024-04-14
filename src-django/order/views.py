@@ -1,3 +1,4 @@
+from ast import Or
 from pickletools import read_uint1
 from django.http import HttpRequest, JsonResponse
 from account.models import UserAccount
@@ -102,20 +103,23 @@ def detail(request: HttpRequest, order_id):
 
 
 @csrf_exempt
-def cancel(request: HttpRequest, order_id):
+def cancel(request: HttpRequest):
     if request.method != "POST":
         return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
     try:
         data: dict = json.loads(request.body.decode())
+
     except:
         return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
     token = data.get("token")
+    order_id = data.get("order_id")
     if token:
         ua = verify_session(token)
         if ua:
             try:
                 order = Order.objects.get(id=order_id, user=ua)
-                order.delete()
+                order.status = "已取消"
+                order.save()
                 return JsonResponse({"status": 200, "message": "订单删除成功"})
             except:
                 return JsonResponse({"status": 400, "message": "订单不存在"})
@@ -151,12 +155,12 @@ def all(request: HttpRequest):
 
 
 @csrf_exempt
-def pay(request: HttpRequest, order_id):
+def pay(request: HttpRequest):
     """
     // paypal
     {
-        "type":"default",
-        "order_id":1
+        "order_id":1,
+        "token":"123123"
     }
     """
     if request.method != "POST":
@@ -166,6 +170,7 @@ def pay(request: HttpRequest, order_id):
     except:
         return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
     token = data.get("token")
+    order_id = data.get("order_id")
     if token:
         ua = verify_session(token)
         if ua:
@@ -180,3 +185,34 @@ def pay(request: HttpRequest, order_id):
             return JsonResponse({"status": 403, "message": "用户未登录"})
     else:
         return JsonResponse({"status": 400, "message": "未设置token"})
+
+
+@csrf_exempt
+def modify_address(request: HttpRequest):
+    """
+    {
+        "order_id":1,
+        "address":"123",
+        "token":"by5n4"
+    }
+    """
+    if request.method != "POST":
+        return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
+    try:
+        data: dict = json.loads(request.body.decode())
+    except:
+        return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
+    token = data.get("token")
+    order_id = data.get("order_id")
+    address = data.get("address", "")
+    if token:
+        ua = verify_session(token)
+        if ua:
+            order = Order.objects.get(user=ua, id=order_id)
+            order.address = address
+            order.save()
+            return JsonResponse({"status": 200, "message": "修改地址成功"})
+        else:
+            return JsonResponse({"status": 403, "message": "用户未登录"})
+    else:
+        return JsonResponse({"status": 400, "message": "token未设置"})
