@@ -1,6 +1,6 @@
-import a from "axios";
+import client from "axios";
 
-const axios = a.create({
+const axios = client.create({
   baseURL: "http://127.0.0.1:8000",
   withCredentials: true,
   headers: {

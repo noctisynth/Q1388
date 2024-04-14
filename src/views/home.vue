@@ -7,7 +7,6 @@ const UserToken = useTokenStore();
 console.log(UserToken.token);
 
 const light = ref<boolean>(!window.matchMedia('(prefers-color-scheme: dark)'));
-console.log(light.value)
 
 const items = ref([
   {
