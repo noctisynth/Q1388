@@ -3,6 +3,7 @@ import "primeicons/primeicons.css";
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import PrimeVue from "primevue/config";
 // @ts-ignore
@@ -30,7 +31,10 @@ app.use(PrimeVue, {
 
 app.directive("ripple", Ripple);
 
-app.use(createPinia());
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
+app.use(pinia);
 app.use(router);
 
 app.mount("#app");

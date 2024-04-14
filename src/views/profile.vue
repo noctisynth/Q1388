@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useTokenStore } from "@/stores/token";
 import axios from "@/util/axiosInstance";
-
 import { md5 } from "js-md5";
 
 import { onMounted, reactive, ref } from "vue";
@@ -35,10 +35,13 @@ const user = reactive<any>({
 });
 
 
+const UserToken = useTokenStore();
+UserToken.setToken("!xPucFegOlcGcKHSJefV0kuvuetiTokZ6qtpQozhA");
+
 
 async function initUser() {
 
-    await axios.get("/account/profile").then(res => {
+    await axios.post("/account/profile", { "token": UserToken.token }).then(res => {
         let data = res.data
         if (data['status'] == 200) {
             user.username = data["username"]
@@ -66,6 +69,7 @@ const address = ref("");
 async function update_user() {
     visible.value = false;
     let data: any = {};
+    data["token"] = UserToken.token
     if (password.value.length != 0) {
         data["password"] = md5(password.value);
     }
@@ -88,17 +92,32 @@ async function update_user() {
 }
 
 async function del_address(address: any) {
-    await axios.post("/account/del_address", {
-        "address": address
-    }).then(res => {
-        if (res.data["status"] == 200) {
-            console.log(res.data)
-        }
 
+    await axios.post("/account/del_address", {
+        "address": address,
+        "token": UserToken.token
+    }).then(res => {
+        console.log(res.data);
+        window.location.reload();
     });
+}
+
+const orders = ref<any>([])
+async function get_products() {
+    await axios.post("/order/all", {
+        "token": UserToken.token
+    }).then(res => {
+        console.log(res.data)
+        if (res.status == 200) {
+            let data = res.data;
+            orders.value = data.orders;
+
+        }
+    })
 }
 onMounted(() => {
     initUser();
+    get_products();
 })
 </script>
 
@@ -123,8 +142,9 @@ onMounted(() => {
                 </div>
             </template>
         </Menubar>
+
         <div class="flex justify-center">
-            <div class="w-full max-w-960px">
+            <div class="w-full max-w-960px flex flex-row">
                 <div class="mt-4 flex flex-col">
                     <Avatar :image="user.avatar" class="mb-4" size="xlarge" shape="circle" />
 
@@ -163,6 +183,22 @@ onMounted(() => {
                         <button @click="del_address(address)">Del</button>
                     </li>
                 </div>
+                <div class="ml-96 mt-10">
+                    <div v-for="order in orders">
+                        <span>订单id: {{ order.id }}</span>
+                        <div>订单状态: {{ order.status }}</div>
+                        <div>下单日期: {{ order.date }}</div>
+                        <div>收货地址: {{ orders.address }}</div>
+                        <div>支付价格: {{ order.total_price }}</div>
+                        <span>商品：</span>
+                        <div class="mt-4" v-for="item in order.order_items">
+                            <div>名称: {{ item.product.name }}</div>
+                            <div>数量: {{ item.product.quantity }}</div>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </div>
     </main>

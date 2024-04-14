@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { useTokenStore } from "@/stores/token";
 import Button from "primevue/button";
 import { ref } from "vue";
+
+const UserToken = useTokenStore();
+console.log(UserToken.token);
 
 const light = ref<boolean>(!window.matchMedia('(prefers-color-scheme: dark)'));
 console.log(light.value)

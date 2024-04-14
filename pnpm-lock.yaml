@@ -14,6 +14,12 @@ dependencies:
   pinia:
     specifier: ^2.1.7
     version: 2.1.7(typescript@5.4.4)(vue@3.4.21)
+  pinia-persistedstate-plugin:
+    specifier: ^0.1.0
+    version: 0.1.0(typescript@5.4.4)(vue@3.4.21)
+  pinia-plugin-persistedstate:
+    specifier: ^3.2.1
+    version: 3.2.1(pinia@2.1.7)
   primeicons:
     specifier: ^7.0.0
     version: 7.0.0
@@ -817,6 +823,10 @@ packages:
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
     dev: true
+
+  /@types/js-cookie@3.0.6:
+    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
+    dev: false
 
   /@types/node@20.12.6:
     resolution: {integrity: sha512-3KurE8taB8GCvZBPngVbp0lk5CKi8M9f9k1rsADh0Evdz5SzJ+Q+Hx9uHoFGsLnLnd1xmkDQr2hVhlA0Mn0lKQ==}
@@ -1832,6 +1842,25 @@ packages:
     engines: {node: '>=0.10'}
     hasBin: true
     dev: true
+
+  /pinia-persistedstate-plugin@0.1.0(typescript@5.4.4)(vue@3.4.21):
+    resolution: {integrity: sha512-ToKR/EJzhhXElQ5YL8PVVY4CqLJjywxszAJjOCgprjmIVkTrPBsEOY4b/ATOzHQc1TtuaJs/3MJuoCpA3pv8Ew==}
+    dependencies:
+      '@types/js-cookie': 3.0.6
+      pinia: 2.1.7(typescript@5.4.4)(vue@3.4.21)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - typescript
+      - vue
+    dev: false
+
+  /pinia-plugin-persistedstate@3.2.1(pinia@2.1.7):
+    resolution: {integrity: sha512-MK++8LRUsGF7r45PjBFES82ISnPzyO6IZx3CH5vyPseFLZCk1g2kgx6l/nW8pEBKxxd4do0P6bJw+mUSZIEZUQ==}
+    peerDependencies:
+      pinia: ^2.0.0
+    dependencies:
+      pinia: 2.1.7(typescript@5.4.4)(vue@3.4.21)
+    dev: false
 
   /pinia@2.1.7(typescript@5.4.4)(vue@3.4.21):
     resolution: {integrity: sha512-+C2AHFtcFqjPih0zpYuvof37SFxMQ7OEG2zV9jRI12i9BOy3YQVAHwdKtyyc8pDcDyIc33WCIsZaCFWU7WWxGQ==}

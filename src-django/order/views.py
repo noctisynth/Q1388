@@ -4,6 +4,7 @@ from account.models import UserAccount
 from shopping_cart.models import Cart
 from product.views import product2dict
 from utils.session import verify_session
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Order, OrderItem
 
@@ -31,7 +32,10 @@ def order2dict(order: Order):
     }
 
 
+@csrf_exempt
 def checkout(request: HttpRequest):
+    if request.method != "POST":
+        return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
     try:
         data: dict = json.loads(request.body.decode())
     except:
@@ -73,7 +77,10 @@ def checkout(request: HttpRequest):
         return JsonResponse({"status": 400, "message": "未设置token"})
 
 
+@csrf_exempt
 def detail(request: HttpRequest, order_id):
+    if request.method != "POST":
+        return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
     try:
         data: dict = json.loads(request.body.decode())
     except:
@@ -94,7 +101,10 @@ def detail(request: HttpRequest, order_id):
         return JsonResponse({"status": 400, "message": "未设置token"})
 
 
+@csrf_exempt
 def cancel(request: HttpRequest, order_id):
+    if request.method != "POST":
+        return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
     try:
         data: dict = json.loads(request.body.decode())
     except:
@@ -115,7 +125,10 @@ def cancel(request: HttpRequest, order_id):
         return JsonResponse({"status": 400, "message": "未设置token"})
 
 
+@csrf_exempt
 def all(request: HttpRequest):
+    if request.method != "POST":
+        return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
     try:
         data: dict = json.loads(request.body.decode())
     except:
@@ -137,6 +150,7 @@ def all(request: HttpRequest):
         return JsonResponse({"status": 400, "message": "未设置token"})
 
 
+@csrf_exempt
 def pay(request: HttpRequest, order_id):
     """
     // paypal
@@ -145,6 +159,8 @@ def pay(request: HttpRequest, order_id):
         "order_id":1
     }
     """
+    if request.method != "POST":
+        return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
     try:
         data: dict = json.loads(request.body.decode())
     except:
