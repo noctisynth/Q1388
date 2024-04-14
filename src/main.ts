@@ -6,6 +6,7 @@ import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import PrimeVue from "primevue/config";
+import ToastService from "primevue/toastservice";
 // @ts-ignore
 import PrimeOne from "primevue/themes/primeone";
 // @ts-ignore
@@ -36,5 +37,5 @@ pinia.use(piniaPluginPersistedstate);
 
 app.use(pinia);
 app.use(router);
-
+app.use(ToastService);
 app.mount("#app");

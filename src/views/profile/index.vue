@@ -5,6 +5,13 @@ import { md5 } from "js-md5";
 
 import { onMounted, reactive, ref } from "vue";
 
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+
+const showSuccess = () => {
+    toast.add({ severity: 'success', summary: 'Success Message', detail: 'Message Content', life: 3000 });
+};
 const items = ref([
     {
         label: '主页',
@@ -50,7 +57,8 @@ async function initUser() {
             user.default_address = data["default_address"]
             user.avatar = data["avatar"]
         } else {
-            alert("用户未登录");
+
+            toast.add({ severity: 'success', summary: '用户未登录', detail: '用户未登录', life: 3000 });
             // 之后做重定向跳转
         }
     })
@@ -83,6 +91,7 @@ async function update_user() {
 
     await axios.post("/account/update", data).then(res => {
         if (res.data.status == 200) {
+            toast.add({ severity: 'success', summary: '资料', detail: '用户资料修改成功', life: 3000 });
             window.location.reload();
         }
     })
@@ -96,6 +105,7 @@ async function del_address(address: any) {
         "token": UserToken.token
     }).then(res => {
         console.log(res.data);
+        toast.add({ severity: 'success', summary: '地址', detail: '地址删除成功', life: 3000 });
         window.location.reload();
     });
 }
@@ -142,8 +152,9 @@ async function checkout(order_id: any) {
     }).then(res => {
         let data = res.data;
         if (data.status == 200) {
+
+            toast.add({ severity: 'success', summary: '支付', detail: '支付成功', life: 6000 });
             window.location.reload();
-            alert("支付成功")
 
         }
         console.log(data)
@@ -160,14 +171,16 @@ async function modify_address(order_id: any) {
     }).then(res => {
         let data = res.data;
         if (data.status == 200) {
+            toast.add({ severity: 'success', summary: '修改地址', detail: '修改成功', life: 3000 });
             window.location.reload();
-            alert("修改成功")
         }
     })
 }
+
 </script>
 
 <template>
+    <Toast class="max-w-90%"></Toast>
     <main class="flex flex-col">
         <Menubar :model="items" class="!border-x-none !b-rd-0" breakpoint="600px">
             <template #item="{ item, props, hasSubmenu, root }">
@@ -191,7 +204,6 @@ async function modify_address(order_id: any) {
 
         <div class="flex justify-center w-full h-full">
             <div class="flex flex-col w-full max-w-960px gap-6">
-
                 <div class="mt-4 flex flex-col items-center">
                     <Avatar :image="user.avatar" class="mb-4" size="xlarge" shape="circle" />
                     <Button class="w-20" label="修改" @click="visible = true" />
