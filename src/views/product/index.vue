@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { FilterMatchMode } from 'primevue/api';
 import Toast from 'primevue/toast';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const toast = useToast()
 const products = ref([
     {
@@ -17,7 +19,7 @@ const products = ref([
         ],
         "comment": "很好用的手机",
         "detail": "这是一个很好用的手机",
-        "pictures": "phone.jpg"
+        "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
     },
     {
         "id": 2,
@@ -30,7 +32,7 @@ const products = ref([
         ],
         "comment": "舒适的T恤",
         "detail": "这是一件舒适的T恤",
-        "pictures": "tshirt.jpg"
+        "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
     },
     {
         "id": 3,
@@ -43,7 +45,7 @@ const products = ref([
         ],
         "comment": "学习编程的好书",
         "detail": "这是一本Python编程入门的好书",
-        "pictures": "book.jpg"
+        "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
     }
 ])
 const formatCurrency = (value: any) => {
@@ -120,13 +122,14 @@ const filters = ref({
                     </template>
                 </Column>
                 <Column class="!p-0 !m-0">
-                    <template #body>
-                        <Button icon="pi pi-send" plain outlined></Button>
+                    <template #body="{ data }">
+                        <Button @click="router.push('/product/' + data.id)" icon="pi pi-send" plain outlined></Button>
                     </template>
                 </Column>
                 <template #footer> 共 {{ products ? products.length : 0 }} 个产品 </template>
             </DataTable>
         </div>
+        <Footer></Footer>
     </div>
 </template>
 
