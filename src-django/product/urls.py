@@ -5,4 +5,5 @@ urlpatterns = [
     path("all", views.all),
     path("search/<str:some>", views.search),
     path("report", views.report),
+    path("detail", views.detail),
 ]

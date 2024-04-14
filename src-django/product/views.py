@@ -74,3 +74,22 @@ def report(request: HttpRequest):
         "order_count": Order.objects.count(),
     }
     return render(request, "report.html", data)
+
+
+@csrf_exempt
+def detail(request: HttpRequest):
+    """
+    {
+        "product_id": 1
+    }
+    """
+    if request.method != "POST":
+        return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
+    try:
+        data: dict = json.loads(request.body.decode())
+        product_id = data.get("product_id")
+        products = Product.objects.filter(id=product_id)
+        if products.count() > 0:
+            return JsonResponse({"status": 200, "product": product2dict(products[0])})
+    except:
+        return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
