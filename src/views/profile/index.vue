@@ -24,7 +24,7 @@ async function initUser() {
     if (!tokenStore.isLoggedIn()) {
         toast.add({ severity: 'error', summary: '错误', detail: '用户未登录！', life: 3000 });
         await new Promise((resolve) => setTimeout(resolve, 3000))
-        router.push("/")
+        return router.push("/")
     }
     const res = await axios.post("/account/profile", { "token": tokenStore.token })
     let data = res.data
@@ -37,6 +37,7 @@ async function initUser() {
     } else {
         toast.add({ severity: 'error', summary: '错误', detail: '登录密钥已过期，请重新登录！', life: 3000 });
         await new Promise((resolve) => setTimeout(resolve, 3000))
+        tokenStore.removeToken()
         router.push("/")
     }
 }
