@@ -8,27 +8,6 @@ console.log(UserToken.token);
 
 const light = ref<boolean>(!window.matchMedia('(prefers-color-scheme: dark)'));
 
-const items = ref([
-  {
-    label: '主页',
-    icon: 'pi pi-home'
-  },
-  {
-    label: '用户',
-    icon: 'pi pi-user',
-    items: [
-      {
-        label: '登录',
-        icon: 'pi pi-sign-in'
-      },
-      {
-        label: '注册',
-        icon: 'pi pi pi-plus-circle'
-      }
-    ]
-  },
-]);
-
 const recommends = ref([
   {
     id: '1000',
