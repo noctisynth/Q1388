@@ -14,7 +14,7 @@ async function initCartData() {
     }).then(res => {
         let data = res.data;
         if (res.data.status == 200) {
-            cart_items.value = data.cart_items.map(item => ({
+            cart_items.value = data.cart_items.map((item: any) => ({
                 ...item,
                 selected: false // 添加选中状态的属性，默认为false
             }));
