@@ -1,68 +1,37 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { FilterMatchMode } from 'primevue/api';
 import Toast from 'primevue/toast';
 import { useRouter } from 'vue-router';
+import axios from '@/util/axiosInstance';
 
 const router = useRouter()
 const toast = useToast()
-const products = ref([
-    {
-        "id": 1,
-        "name": "手机",
-        "price": 1000,
-        "quantity": 10,
-        "spec_param": "4G手机",
-        "categories": [
-            "电子产品"
-        ],
-        "comment": "很好用的手机",
-        "detail": "这是一个很好用的手机",
-        "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-    },
-    {
-        "id": 2,
-        "name": "T恤",
-        "price": 20,
-        "quantity": 50,
-        "spec_param": "纯棉T恤",
-        "categories": [
-            "服装"
-        ],
-        "comment": "舒适的T恤",
-        "detail": "这是一件舒适的T恤",
-        "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-    },
-    {
-        "id": 3,
-        "name": "Python编程入门",
-        "price": 50,
-        "quantity": 30,
-        "spec_param": "Python编程入门书籍",
-        "categories": [
-            "图书"
-        ],
-        "comment": "学习编程的好书",
-        "detail": "这是一本Python编程入门的好书",
-        "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-    }
-])
-const formatCurrency = (value: any) => {
-    return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-};
-const categories = ref([
-    '图书', '服装', '电子产品'
-]);
+const products = ref()
+const loadding = ref<boolean>(true)
+const categories = ref();
 
-const refresh = () => {
-    toast.add({ 'severity': 'success', 'summary': '成功', 'detail': "列表已刷新", 'life': 3000 })
+const refresh = async () => {
+    loadding.value = true
+    const res = await axios.get("/product/all")
+    if (res.data) {
+        products.value = res.data.products
+        loadding.value = false
+        toast.add({ 'severity': 'success', 'summary': '成功', 'detail': "数据加载成功", 'life': 3000 })
+    } else {
+        toast.add({ 'severity': 'error', 'summary': '失败', 'detail': "数据加载失败:" + res.data.message, 'life': 3000 })
+    }
 }
 
 const filters = ref({
     name: { value: null, matchMode: FilterMatchMode.CONTAINS },
     categories: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+
+onMounted(async () => {
+    refresh()
+})
 </script>
 
 <template>
@@ -71,7 +40,7 @@ const filters = ref({
         <Header></Header>
         <div class="flex justify-center py-3rem max-w-full">
             <DataTable dateKey="id" paginator :rows="10" class="max-w-960px w-full" :value="products"
-                v-model:filters="filters" filterDisplay="row">
+                :loading="loadding" v-model:filters="filters" filterDisplay="row">
                 <template #header>
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <span class="text-xl text-900 font-bold">产品</span>
@@ -102,7 +71,7 @@ const filters = ref({
                 </Column>
                 <Column field="price" header="价格" sortable>
                     <template #body="slotProps">
-                        {{ formatCurrency(slotProps.data.price) }}
+                        ￥{{ slotProps.data.price }}
                     </template>
                 </Column>
                 <Column field="quantity" header="余量" sortable></Column>

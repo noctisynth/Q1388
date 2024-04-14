@@ -1,71 +1,40 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import axios from '@/util/axiosInstance';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
-const product = ref({
-    "id": 1,
-    "name": "手机",
-    "price": 1000,
-    "quantity": 10,
-    "spec_param": "4G手机",
-    "categories": [
-        "电子产品"
-    ],
-    "comment": "很好用的手机",
-    "detail": "这是一个很好用的手机",
-    "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-})
+const route = useRoute()
+const toast = useToast()
 
-const recommends = ref([
-    {
-        "id": 1,
-        "name": "手机",
-        "price": 1000,
-        "quantity": 10,
-        "spec_param": "4G手机",
-        "categories": [
-            "电子产品"
-        ],
-        "comment": "很好用的手机",
-        "detail": "这是一个很好用的手机",
-        "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-    },
-    {
-        "id": 2,
-        "name": "T恤",
-        "price": 20,
-        "quantity": 50,
-        "spec_param": "纯棉T恤",
-        "categories": [
-            "服装"
-        ],
-        "comment": "舒适的T恤",
-        "detail": "这是一件舒适的T恤",
-        "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-    },
-    {
-        "id": 3,
-        "name": "Python编程入门",
-        "price": 50,
-        "quantity": 30,
-        "spec_param": "Python编程入门书籍",
-        "categories": [
-            "图书"
-        ],
-        "comment": "学习编程的好书",
-        "detail": "这是一本Python编程入门的好书",
-        "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
+const loadding = ref<boolean>(true)
+const product = ref()
+
+const recommends = ref()
+
+onMounted(async () => {
+    const res = await axios.post("/product/detail", {
+        product_id: route.params.id
+    })
+    if (res.data.status) {
+        product.value = res.data.product
+    } else {
+        toast.add({ 'severity': 'error', 'summary': '失败', 'detail': '数据加载失败:' + res.data.message, 'life': 3000 })
     }
-])
+    loadding.value = false
+})
 </script>
 
 <template>
     <div class="h-full w-full flex flex-col">
+        <Toast></Toast>
         <Header></Header>
-        <section class="flex justify-center items-center mt-6 mb-2 py-4 w-full">
+        <section v-if="!loadding" class="flex justify-center items-center mt-6 mb-2 py-4 w-full">
             <div class="m-2 flex flex-row flex-wrap-reverse gap-8 items-center justify-center">
                 <div class="flex justify-center w-full max-w-300px">
-                    <Image :src="product.pictures" :alt="product.comment" image-class="max-w-full" class="max-w-full"
-                        preview />
+                    <Image v-if="product.pictures" :src="product.pictures" :alt="product.comment"
+                        image-class="max-w-full" class="max-w-full" preview />
                 </div>
                 <div class="flex flex-col items-start w-85">
                     <h1>{{ product.name }}</h1>
@@ -91,9 +60,15 @@ const recommends = ref([
                 </div>
             </div>
         </section>
+        <section v-else class="flex flex-col items-center justify-center m-10">
+            <ProgressSpinner></ProgressSpinner>
+        </section>
         <Divider><i class="pi pi-heart-fill"></i> 你可能还喜欢</Divider>
         <div class="flex justify-center items-center mt-6 mb-2 py-4 w-full">
             <DataView :value="recommends" dataKey="id">
+                <template #empty>
+                    <div>暂无数据。</div>
+                </template>
                 <template #list="slotProps">
                     <div class="grid">
                         <div v-for="(item, index) in slotProps.items" :key="index">
