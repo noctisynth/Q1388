@@ -6,17 +6,17 @@ from product.models import Product
 # Create your models here.
 class Order(models.Model):
     STATUS_CHOICES = (
-        ("Pending", "Pending"),
-        ("Paid", "Paid"),
-        ("Shipped", "Shipped"),
-        ("Completed", "Completed"),
-        ("Cancelled", "Cancelled"),
+        ("未支付", "未支付"),
+        ("已支付", "已支付"),
+        ("传输中", "传输中"),
+        ("已完成", "传输中"),
+        ("已取消", "已取消"),
     )
     user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, verbose_name="用户")
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default="Pending",
+        default="未支付",
         verbose_name="订单状态",
     )
     total_price = models.DecimalField(

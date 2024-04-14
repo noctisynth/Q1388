@@ -38,5 +38,5 @@ pinia.use(piniaPluginPersistedstate);
 app.use(ToastService)
 app.use(pinia);
 app.use(router);
-
+app.use(ToastService);
 app.mount("#app");
