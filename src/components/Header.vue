@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { useTokenStore } from '@/stores/token';
+import axios from '@/util/axiosInstance';
+import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
 const tokenStore = useTokenStore()
+const toast = useToast()
 const showLogin = ref<boolean>(false)
+const username = ref<string | null>()
+const password = ref<string | null>()
 
 let user_items;
 if (!tokenStore.isLoggedIn())
@@ -57,9 +62,48 @@ const items = ref([
         }
     }
 ]);
+
+async function login() {
+    const res = await axios.post("/account/login", {
+        username: username.value,
+        password: password.value
+    })
+    if (res.data.status === 200) {
+        tokenStore.setToken(res.data.token)
+        toast.add({
+            'severity': 'success', 'summary': '成功', 'detail': '登录成功！', 'life': 3000
+        })
+        await new Promise((resolve) => setTimeout(resolve, 3000))
+        window.location.reload();
+        showLogin.value = false
+    } else {
+        toast.add({
+            'severity': 'error', 'summary': '失败', 'detail': res.data.message, 'life': 3000
+        })
+        await new Promise((resolve) => setTimeout(resolve, 3000))
+        showLogin.value = false
+    }
+}
 </script>
 
 <template>
+    <Dialog v-model:visible="showLogin" modal header="登录" class="max-w-90% w-xl">
+        <span class="p-text-secondary">请输入你的账号密码</span>
+        <div class="flex gap-3 items-center justify-center flex-col w-full p-5">
+            <div class="flex flex-col w-full max-w-70% px-1rem gap-1rem">
+                <label for="username" class="font-semibold">用户名</label>
+                <InputText v-model="username" id="username" class="w-full" />
+            </div>
+            <div class="flex flex-col w-full max-w-70% px-1rem gap-1rem">
+                <label for="password" class="font-semibold">密码</label>
+                <Password v-model="password" inputId="password" inputClass="w-full" class="w-full" />
+            </div>
+        </div>
+        <div class="flex justify-end gap-2">
+            <Button type="button" label="取消" severity="secondary" @click="showLogin = false"></Button>
+            <Button @click="login" type="button" label="登录"></Button>
+        </div>
+    </Dialog>
     <Menubar :model="items" class="!border-x-none !b-rd-0" breakpoint="600px">
         <template #item="{ item, props, hasSubmenu, root }">
             <a v-ripple class="flex align-items-center" v-bind="props.action">

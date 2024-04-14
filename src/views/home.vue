@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTokenStore } from "@/stores/token";
 import Button from "primevue/button";
+import Toast from "primevue/toast";
 import { ref } from "vue";
 
 const UserToken = useTokenStore();
@@ -110,6 +111,7 @@ const products = ref([
 
 <template>
   <main class="flex flex-col">
+    <Toast class="max-w-90%"></Toast>
     <Header></Header>
     <div class="flex justify-center w-full h-full">
       <div class="flex flex-col w-full max-w-960px gap-6">

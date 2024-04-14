@@ -17,7 +17,7 @@ onMounted(async () => {
     const res = await axios.post("/product/detail", {
         product_id: route.params.id
     })
-    if (res.data.status) {
+    if (res.data.status === 200) {
         product.value = res.data.product
     } else {
         toast.add({ 'severity': 'error', 'summary': '失败', 'detail': '数据加载失败:' + res.data.message, 'life': 3000 })
