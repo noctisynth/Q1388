@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const items = ref([
     {
         label: '主页',
-        icon: 'pi pi-home'
+        icon: 'pi pi-home',
+        command: () => {
+            router.push("/")
+        }
     },
     {
         label: '用户',
@@ -20,6 +25,13 @@ const items = ref([
             }
         ]
     },
+    {
+        label: '产品',
+        icon: 'pi pi-box',
+        command: () => {
+            router.push("/product")
+        }
+    }
 ]);
 </script>
 
