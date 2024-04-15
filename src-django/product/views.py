@@ -91,5 +91,7 @@ def detail(request: HttpRequest):
         products = Product.objects.filter(id=product_id)
         if products.count() > 0:
             return JsonResponse({"status": 200, "product": product2dict(products[0])})
+        else:
+            return JsonResponse({"status": 404, "message": "商品不存在"})
     except:
         return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
