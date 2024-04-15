@@ -3,6 +3,7 @@ from pickletools import read_uint1
 from django.http import HttpRequest, JsonResponse
 from account.models import UserAccount
 from shopping_cart.models import Cart
+from product.models import Product
 from product.views import product2dict
 from utils.session import verify_session
 from django.views.decorators.csrf import csrf_exempt
@@ -66,6 +67,13 @@ def checkout(request: HttpRequest):
                     order_item.quantity = cart_item.quantity
                     order_item.price = cart_item.subtotal
                     order_item.save()
+
+                    product = Product.objects.get(id=cart_item.product.id)
+                    product.quantity -= cart_item.quantity
+                    if product.quantity < 0:
+                        product.quantity = 0
+                    product.save()
+
                     cart_item.delete()
 
                 return JsonResponse({"status": 200, "message": "订单创建成功"})
