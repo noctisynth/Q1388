@@ -26,6 +26,7 @@ async function initCartData() {
 }
 
 async function add_product(product_id: any) {
+    console.log(product_id)
     await axios.post("/shopping_cart/add", {
         "product_id": product_id,
         "quantity": 1,
@@ -39,6 +40,7 @@ async function add_product(product_id: any) {
 
 }
 async function del_product(product_id: any) {
+
     await axios.post("/shopping_cart/del", {
         "product_id": product_id,
         "number": 1,
@@ -50,6 +52,7 @@ async function del_product(product_id: any) {
         }
     })
 }
+
 async function checkout() {
     await axios.post("/order/checkout", {
         "token": UserToken.token
@@ -62,16 +65,6 @@ async function checkout() {
         }
     })
 }
-
-// 计算选中商品的总价格
-const select_price = computed(() => {
-    return cart_items.value.reduce((total, item) => {
-        if (item.selected) {
-            return total + item.price;
-        }
-        return total;
-    }, 0);
-});
 
 onMounted(() => {
     initCartData()
@@ -122,9 +115,17 @@ const calculateTotalPrice = () => {
                             <!-- <img src="product.pictures" class="w-6rem border-round" /> -->
                         </template>
                     </Column>
+                    <Column field="price" header="总价格"></Column>
                     <Column field="product.price" header="单价"></Column>
                     <Column field="quantity" header="数量"></Column>
-                    <Column field="price" header="总价格"></Column>
+                    <Column header="数量变更">
+                        <template #body="slotProps">
+                            <Button @click="add_product(slotProps.data.product.id)" label="+"></Button>
+                            <Button @click="del_product(slotProps.data.product.id)" label="-" class="ml-2"></Button>
+                        </template>
+                    </Column>
+
+
                 </DataTable>
 
             </div>
