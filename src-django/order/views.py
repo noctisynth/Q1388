@@ -141,7 +141,8 @@ def all(request: HttpRequest):
     if token:
         ua = verify_session(token)
         if ua:
-            orders = Order.objects.filter(user=ua)
+            orders = Order.objects.filter(user=ua).order_by("-id")
+
             orders_list = []
             for o in orders:
                 orders_list.append(order2dict(o))

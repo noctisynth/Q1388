@@ -26,7 +26,6 @@ async function initCartData() {
 }
 
 async function add_product(product_id: any) {
-    console.log(product_id)
     await axios.post("/shopping_cart/add", {
         "product_id": product_id,
         "quantity": 1,
@@ -46,7 +45,6 @@ async function del_product(product_id: any) {
         "token": UserToken.token
     }).then(res => {
         let data = res.data;
-        console.log(data)
         if (data.status === 200) {
             router.go(0)
         }
@@ -57,7 +55,6 @@ async function checkout() {
         "token": UserToken.token
     }).then(res => {
         let data = res.data
-        console.log(data)
         if (data.status === 200) {
             router.push("/profile")
         } else {
@@ -79,31 +76,59 @@ const select_price = computed(() => {
 onMounted(() => {
     initCartData()
 })
+const selectedItem = ref<any[]>([]);
+const selectAll = ref(false);
+
+// Function to handle select all checkbox
+const onSelectAllChange = (event: any) => {
+    selectAll.value = event.checked;
+    selectedItem.value = selectAll.value ? [...cart_items.value] : [];
+    calculateTotalPrice();
+};
+
+// Function to handle individual row selection
+const onRowSelect = (event: any) => {
+    calculateTotalPrice()
+};
+
+// Function to calculate total price of selected items
+const calculateTotalPrice = () => {
+    total_price.value = selectedItem.value.reduce((total, item) => total + item.price, 0);
+};
 
 </script>
 <template>
-    <div class="flex justify-center">
+    <main class="flex flex-col">
+        <Toast class="max-w-90%"></Toast>
+        <Header></Header>
+        <div class="flex justify-center w-full h-full">
 
-        <div class="mt-4 flex flex-col">
-            <button @click="checkout()">结算</button>
-            <span>总价格: {{ total_price }}</span>
-            <span>选中商品总价格: {{ select_price }}</span>
-            <div class="mt-4">
-                <div class="mt-10" v-for="item in cart_items" :key="item.id">
-                    <div>名称：{{ item.product.name }}</div>
-                    <div>商品单价：{{ item.product.price }}</div>
-                    <div>数量：{{ item.quantity }}</div>
-                    <div>价格：{{ item.price }}
-                        <span><button @click="add_product(item.product.id)">+</button></span>
-                        <span><button @click="del_product(item.product.id)">-</button></span>
-                    </div>
-                    <input type="checkbox" v-model="item.selected"> 选中
-                </div>
+            <div class="m-4">
+                <DataTable :value="cart_items" tableStyle="min-width: 80rem" v-model:selection="selectedItem"
+                    :selectAll="selectAll" @select-all-change="onSelectAllChange" @rowSelect="onRowSelect"
+                    @row-unselect="onRowSelect">
+
+                    <template #header>
+                        <div class="flex flex-wrap align-items-center justify-between gap-2">
+                            <span class="text-xl text-900 font-bold">购物车</span>
+                            <span>总价格：{{ total_price }}</span> <!-- 显示总价格 -->
+                            <Button @click="checkout()" label="结算"></Button>
+                        </div>
+                    </template>
+                    <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
+                    <Column field="product.name" header="名称"></Column>
+                    <Column header="图片">
+                        <template>
+                            <!-- <img src="product.pictures" class="w-6rem border-round" /> -->
+                        </template>
+                    </Column>
+                    <Column field="product.price" header="单价"></Column>
+                    <Column field="quantity" header="数量"></Column>
+                    <Column field="price" header="总价格"></Column>
+                </DataTable>
+
             </div>
         </div>
-
-    </div>
+        <Footer></Footer>
+    </main>
 </template>
-
-
-<style scoped></style>
