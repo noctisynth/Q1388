@@ -18,7 +18,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name="商品名称", unique=True)
-    price = models.IntegerField(verbose_name="价格")
+    price = models.FloatField(verbose_name="价格")
     quantity = models.IntegerField(default=0, verbose_name="库存数量")
     spec_param = models.CharField(max_length=300, verbose_name="规格参数")
     categories = models.ManyToManyField(Category, verbose_name="类别")

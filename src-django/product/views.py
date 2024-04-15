@@ -101,3 +101,9 @@ def detail(request: HttpRequest):
 def categories(request: HttpRequest):
     categories = [c.name for c in Category.objects.all()]
     return JsonResponse({"status": 200, "categories": categories})
+
+
+@csrf_exempt
+def recommend(request: HttpRequest):
+    products = [product2dict(product) for product in Product.objects.order_by("?")[:30]]
+    return JsonResponse({"status": 200, "products": products})
