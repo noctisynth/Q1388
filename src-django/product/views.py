@@ -1,7 +1,7 @@
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render
 
-from .models import Product
+from .models import Category, Product
 from order.models import Order
 from account.models import UserAccount
 
@@ -95,3 +95,9 @@ def detail(request: HttpRequest):
             return JsonResponse({"status": 404, "message": "商品不存在"})
     except:
         return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
+
+
+@csrf_exempt
+def categories(request: HttpRequest):
+    categories = [c.name for c in Category.objects.all()]
+    return JsonResponse({"status": 200, "categories": categories})
