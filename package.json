@@ -9,9 +9,11 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "runserver": "pdm run src-django/manage.py runserver",
+    "serve": "pdm run src-django/manage.py runserver",
     "migrate": "pdm run src-django/manage.py migrate",
-    "makemigrations": "pdm run src-django/manage.py makemigrations"
+    "makemigrations": "pdm run src-django/manage.py makemigrations",
+    "integrate": "pnpm build && pnpm makemigrations && pnpm migrate",
+    "start": "pnpm integrate && pnpm serve"
   },
   "dependencies": {
     "axios": "^1.6.8",
