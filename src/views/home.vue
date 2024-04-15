@@ -1,53 +1,14 @@
 <script setup lang="ts">
-import { useTokenStore } from "@/stores/token";
+import axios from "@/util/axiosInstance";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
-import { ref } from "vue";
+import { useToast } from "primevue/usetoast";
+import { onMounted, ref } from "vue";
 
-const UserToken = useTokenStore();
-console.log(UserToken.token);
-
-const recommends = ref([
-  {
-    "id": 1,
-    "name": "手机",
-    "price": 1000,
-    "quantity": 10,
-    "spec_param": "4G手机",
-    "categories": [
-      "电子产品"
-    ],
-    "comment": "很好用的手机",
-    "detail": "这是一个很好用的手机",
-    "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-  },
-  {
-    "id": 2,
-    "name": "T恤",
-    "price": 20,
-    "quantity": 50,
-    "spec_param": "纯棉T恤",
-    "categories": [
-      "服装"
-    ],
-    "comment": "舒适的T恤",
-    "detail": "这是一件舒适的T恤",
-    "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-  },
-  {
-    "id": 3,
-    "name": "Python编程入门",
-    "price": 50,
-    "quantity": 30,
-    "spec_param": "Python编程入门书籍",
-    "categories": [
-      "图书"
-    ],
-    "comment": "学习编程的好书",
-    "detail": "这是一本Python编程入门的好书",
-    "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-  }
-]);
+const loadding = ref<boolean>(true)
+const toast = useToast()
+const recommends = ref();
+const products = ref()
 const responsiveOptions = ref([
   {
     breakpoint: '1400px',
@@ -66,47 +27,16 @@ const responsiveOptions = ref([
   }
 ]);
 
-const products = ref([
-  {
-    "id": 1,
-    "name": "手机",
-    "price": 1000,
-    "quantity": 10,
-    "spec_param": "4G手机",
-    "categories": [
-      "电子产品"
-    ],
-    "comment": "很好用的手机",
-    "detail": "这是一个很好用的手机",
-    "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-  },
-  {
-    "id": 2,
-    "name": "T恤",
-    "price": 20,
-    "quantity": 50,
-    "spec_param": "纯棉T恤",
-    "categories": [
-      "服装"
-    ],
-    "comment": "舒适的T恤",
-    "detail": "这是一件舒适的T恤",
-    "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
-  },
-  {
-    "id": 3,
-    "name": "Python编程入门",
-    "price": 50,
-    "quantity": 30,
-    "spec_param": "Python编程入门书籍",
-    "categories": [
-      "图书"
-    ],
-    "comment": "学习编程的好书",
-    "detail": "这是一本Python编程入门的好书",
-    "pictures": "https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg"
+onMounted(async () => {
+  const res = await axios.get("/product/all")
+  if (res.data) {
+    products.value = res.data.products
+    recommends.value = res.data.products
+    loadding.value = false
+  } else {
+    toast.add({ 'severity': 'error', 'summary': '失败', 'detail': "数据加载失败:" + res.data.message, 'life': 3000 })
   }
-])
+})
 </script>
 
 <template>
@@ -114,7 +44,7 @@ const products = ref([
     <Toast class="max-w-90%"></Toast>
     <Header></Header>
     <div class="flex justify-center w-full h-full">
-      <div class="flex flex-col w-full max-w-960px gap-6">
+      <div class="flex flex-col w-full max-w-960px gap-6" v-if="!loadding">
         <Carousel :value="recommends" :numVisible="3" :numScroll="3" :responsiveOptions="responsiveOptions" circular
           :autoplayInterval="3000">
           <template #item="slotProps">
@@ -137,6 +67,9 @@ const products = ref([
           </template>
         </Carousel>
         <DataView :value="products" dataKey="id">
+          <template #empty>
+            <div class="flex items-center justify-center">暂无数据。</div>
+          </template>
           <template #list="slotProps">
             <div class="grid">
               <div v-for="(item, index) in slotProps.items" :key="index">
@@ -168,6 +101,9 @@ const products = ref([
             </div>
           </template>
         </DataView>
+      </div>
+      <div class="flex justify-center items-center" v-else>
+        <ProgressSpinner></ProgressSpinner>
       </div>
     </div>
     <Footer></Footer>
