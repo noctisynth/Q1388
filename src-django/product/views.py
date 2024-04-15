@@ -1,3 +1,4 @@
+from types import NoneType
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render
 
@@ -16,7 +17,7 @@ def product2dict(p: Product):
         "price": p.price,
         "quantity": p.quantity,
         "spec_param": p.spec_param,
-        "categories": p.get_categories(),
+        "category": p.category.name,  # type: ignore
         "comment": p.comment,
         "detail": p.detail,
         "pictures": p.pictures,
@@ -32,39 +33,43 @@ def all(request: HttpRequest):
 
 
 @csrf_exempt
-def search(request: HttpRequest, some):
+def search_keyword(request: HttpRequest):
     if request.method != "POST":
         return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
     try:
         data: dict = json.loads(request.body.decode())
-        description_list = data["description_list"]
-
-        if some == "keyword":
-            products = Product.objects.all()
-            products_list = []
-
-            for p in products:
-                for d in description_list:
-                    if d in p.name or d in p.comment or d in p.detail:
-                        products_list.append(product2dict(p))
-                        break
-
-            return JsonResponse({"status": 200, "products": products_list})
-
-        elif some == "category":
-            products = Product.objects.all()
-            products_list = []
-
-            for p in products:
-                for d in description_list:
-                    if d in p.get_categories():
-                        products_list.append(product2dict(p))
-                        break
-            return JsonResponse({"status": 200, "products": products_list})
-        else:
-            return JsonResponse({"status": 400, "message": "请求路径错误"})
+        keyword = data["keyword"]
     except:
         return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
+    products = Product.objects.all()
+    products_list = []
+
+    for p in products:
+        if keyword in p.name or keyword in p.comment or keyword in p.detail:
+            products_list.append(product2dict(p))
+
+    return JsonResponse({"status": 200, "products": products_list})
+
+
+@csrf_exempt
+def search_category(request: HttpRequest):
+    if request.method != "POST":
+        return JsonResponse({"status": 405, "message": "请使用POST调用接口"})
+    try:
+        data: dict = json.loads(request.body.decode())
+        category = data["category"]
+    except json.JSONDecodeError:
+        return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
+    except:
+        return JsonResponse({"status": 500, "message": "存在没有分类的商品"})
+
+    products = Product.objects.all()
+    products_list = []
+    for p in products:
+        if category in p.category.name or category in p.category.description:  # type: ignore
+            products_list.append(product2dict(p))
+
+    return JsonResponse({"status": 200, "products": products_list})
 
 
 def report(request: HttpRequest):
@@ -93,7 +98,8 @@ def detail(request: HttpRequest):
             return JsonResponse({"status": 200, "product": product2dict(products[0])})
         else:
             return JsonResponse({"status": 404, "message": "商品不存在"})
-    except:
+    except Exception as e:
+        print(e)
         return JsonResponse({"status": 401, "message": "数据格式错误，请使用json"})
 
 
