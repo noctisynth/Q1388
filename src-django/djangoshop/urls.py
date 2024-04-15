@@ -21,8 +21,16 @@ from django.views.generic.base import TemplateView
 from django.conf import settings
 from django.views.static import serve
 
+from django.http import HttpResponseRedirect
+
+
+def for_admin(request):
+    return HttpResponseRedirect("/admin/")
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("admin", for_admin),
     path("", TemplateView.as_view(template_name="index.html")),
     path("account/", include("account.urls")),
     path("product/", include("product.urls")),
