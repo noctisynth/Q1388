@@ -111,8 +111,8 @@ const calculateTotalPrice = () => {
                     <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
                     <Column field="product.name" header="名称"></Column>
                     <Column header="图片">
-                        <template>
-                            <!-- <img src="product.pictures" class="w-6rem border-round" /> -->
+                        <template #body="slotProps">
+                            <img :src="slotProps.data.product.pictures" class="w-6rem border-round" />
                         </template>
                     </Column>
                     <Column field="price" header="总价格"></Column>
@@ -125,9 +125,7 @@ const calculateTotalPrice = () => {
                         </template>
                     </Column>
 
-
                 </DataTable>
-
             </div>
         </div>
         <Footer></Footer>

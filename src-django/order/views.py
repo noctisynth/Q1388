@@ -177,7 +177,7 @@ def pay(request: HttpRequest):
         if ua:
             try:
                 order = Order.objects.get(user=ua, id=order_id)
-                order.status = "Paid"
+                order.status = "已支付"
                 order.save()
                 return JsonResponse({"status": 200, "message": "支付成功"})
             except:

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useTokenStore } from '@/stores/token';
 import axios from '@/util/axiosInstance';
-import { md5 } from 'js-md5';
 import Password from 'primevue/password';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
@@ -86,11 +85,9 @@ const items = ref([
 ]);
 
 async function login() {
-    const passwd = password.value;
-    if (!passwd) return
     const res = await axios.post("/account/login", {
         username: username.value,
-        password: md5(passwd),
+        password: password.value,
         token: 123,
     })
     if (res.data.status === 200) {
@@ -116,11 +113,9 @@ async function register() {
             'severity': 'error', 'summary': '失败', 'detail': "两次输入的密码不一致", 'life': 3000
         })
     }
-    const passwd = password.value;
-    if (!passwd) return
     const res = await axios.post("/account/add", {
         username: username.value,
-        password: md5(passwd),
+        password: password.value,
         email: email.value
     })
     if (res.data.status === 200) {

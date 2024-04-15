@@ -3,7 +3,6 @@ from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from utils.session import verify_session
 from .models import Session, UserAccount, UserAddress
-
 import json
 
 
@@ -12,7 +11,7 @@ def add(request: HttpRequest):
     """
     {
         "username":"bash",
-        "password":"e10adc3949ba59abbe56e057f20f883e",// md5
+        "password":"123456",// md5
         "email":"admin@site.com"
     } //头像使用默认，地址以后添加, 为空逻辑判断交给前端
     """
@@ -120,7 +119,7 @@ def update(request: HttpRequest):
     email: str = data.get("email", "")
     avatar: str = data.get("avatar", "")
     default_address: str = data.get("default_address", "")
-    addresses: list = data.get("addresses", [])
+    addresses: str = data.get("addresses", "")
 
     if token:
         ua = verify_session(token)
@@ -138,12 +137,11 @@ def update(request: HttpRequest):
                 ua.default_address = default_address
             if addresses:
                 d = ua.addresses
-                for a in addresses:
-                    if a not in d:
-                        user_adress = UserAddress()
-                        user_adress.user = ua
-                        user_adress.location = a
-                        user_adress.save()
+                if addresses not in d:
+                    user_adress = UserAddress()
+                    user_adress.user = ua
+                    user_adress.location = addresses
+                    user_adress.save()
             ua.save()
 
             return JsonResponse({"status": 200, "message": "更新成功"})
