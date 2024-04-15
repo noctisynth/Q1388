@@ -30,6 +30,9 @@ API 接口列表
    pnpm serve
    ```
 
+3. 部署
+   python manage.py loaddata db.json
+   pnpm start
 ## 贡献
 
 参考[贡献](./CONTRIBUTING.md)。
