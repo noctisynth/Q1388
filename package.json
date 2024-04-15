@@ -12,7 +12,7 @@
     "serve": "pdm run src-django/manage.py runserver",
     "migrate": "pdm run src-django/manage.py migrate",
     "makemigrations": "pdm run src-django/manage.py makemigrations",
-    "integrate": "pnpm build && pnpm makemigrations && pnpm migrate",
+    "integrate": "pdm install && pnpm install && pnpm build && pnpm makemigrations && pnpm migrate",
     "start": "pnpm integrate && pnpm serve"
   },
   "dependencies": {
