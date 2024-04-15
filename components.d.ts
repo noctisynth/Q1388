@@ -27,6 +27,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectButton: typeof import('primevue/selectbutton')['default']
+    Slider: typeof import('primevue/slider')['default']
     Tag: typeof import('primevue/tag')['default']
   }
 }

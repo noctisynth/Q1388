@@ -13,13 +13,13 @@ const tokenStore = useTokenStore()
 
 const loadding = ref<boolean>(true)
 const product = ref()
-
+const quantity = ref<any>(1)
 const recommends = ref()
 
 async function add() {
     const res = await axios.post("/shopping_cart/add", {
         product_id: route.params.id,
-        quantity: product.value.quantity,
+        quantity: quantity.value,
         token: tokenStore.token
     })
     if (res.data.status === 200) {
@@ -79,7 +79,11 @@ onMounted(async () => {
                         </div>
                     </div>
                     <div class="flex justify-end w-full py-2 mt-3">
-                        <Button @click="add" label="加入购物车"></Button>
+                        <div class="flex flex-col gap-2rem">
+                            <InputText v-model="quantity" class="w-full" />
+                            <Slider v-model="quantity" class="w-full" :min="1" :max="product.quantity" />
+                            <Button @click="add" label="加入购物车"></Button>
+                        </div>
                     </div>
                 </div>
             </div>
