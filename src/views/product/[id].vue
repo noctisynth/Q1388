@@ -121,6 +121,7 @@ onMounted(async () => {
                                         <span class="text-xl font-semibold text-900">${{ item.price }}</span>
                                         <div class="flex flex-row w-full justify-end">
                                             <Button icon="pi pi-shopping-cart" label="购买"
+                                                @click="router.push('/product/' + item.id)"
                                                 class="flex-auto md:flex-initial whitespace-nowrap"></Button>
                                         </div>
                                     </div>
