@@ -69,21 +69,21 @@ async function update_user() {
     await axios.post("/account/update", data).then(res => {
         if (res.data.status == 200) {
             toast.add({ severity: 'success', summary: '资料', detail: '用户资料修改成功', life: 3000 });
-            window.location.reload();
+            router.go(0)
         }
     })
 
 }
 
 async function del_address(address: any) {
-    await axios.post("/account/del_address", {
+    const res = await axios.post("/account/del_address", {
         "address": address,
         "token": tokenStore.token
-    }).then(res => {
-        console.log(res.data);
-        toast.add({ severity: 'success', summary: '地址', detail: '地址删除成功', life: 3000 });
-        window.location.reload();
-    });
+    })
+    console.log(res.data);
+    toast.add({ severity: 'success', summary: '地址', detail: '地址删除成功', life: 3000 });
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    router.go(0)
 }
 
 const orders = ref<any>([])
@@ -95,7 +95,6 @@ async function get_products() {
         if (res.status == 200) {
             let data = res.data;
             orders.value = data.orders;
-
         }
     })
 }
@@ -106,7 +105,7 @@ async function cancel_order(order_id: any) {
     }).then(res => {
         let data = res.data;
         if (data.status == 200) {
-            window.location.reload();
+            router.go(0)
         }
     })
 }
@@ -129,7 +128,7 @@ async function checkout(order_id: any) {
         if (data.status == 200) {
 
             toast.add({ severity: 'success', summary: '支付', detail: '支付成功', life: 6000 });
-            window.location.reload();
+            router.go(0)
 
         }
         console.log(data)
@@ -147,7 +146,7 @@ async function modify_address(order_id: any) {
         let data = res.data;
         if (data.status == 200) {
             toast.add({ severity: 'success', summary: '修改地址', detail: '修改成功', life: 3000 });
-            window.location.reload();
+            router.go(0)
         }
     })
 }
