@@ -24,7 +24,7 @@ from django.views.static import serve
 from django.http import HttpResponseRedirect
 
 
-def for_admin(request):
+def for_admin(_):
     return HttpResponseRedirect("/admin/")
 
 
