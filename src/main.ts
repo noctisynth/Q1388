@@ -6,12 +6,12 @@ import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import PrimeVue from "primevue/config";
-import ToastService from "primevue/toastservice";
 // @ts-ignore
 import PrimeOne from "primevue/themes/primeone";
 // @ts-ignore
 import Aura from "primevue/themes/primeone/aura";
 import Ripple from "primevue/ripple";
+import ToastService from "primevue/toastservice";
 
 import App from "./App.vue";
 import router from "./router";

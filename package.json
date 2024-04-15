@@ -30,6 +30,7 @@
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/tsconfig": "^0.5.1",
     "npm-run-all2": "^6.1.2",
+    "prettier": "^3.2.5",
     "typescript": "~5.4.0",
     "unocss": "^0.59.1",
     "unplugin-vue-components": "^0.26.0",

@@ -1,37 +1,13 @@
 <script setup lang="ts">
-import { useTokenStore } from "@/stores/token";
-import axios from "@/util/axiosInstance";
-import { md5 } from "js-md5";
-
 import { onMounted, reactive, ref } from "vue";
-
-import Toast from "primevue/toast";
+import { useTokenStore } from "@/stores/token";
+import { md5 } from "js-md5";
 import { useToast } from "primevue/usetoast";
-const toast = useToast();
+import Toast from "primevue/toast";
+import router from "@/router";
+import axios from "@/util/axiosInstance";
 
-const showSuccess = () => {
-    toast.add({ severity: 'success', summary: 'Success Message', detail: 'Message Content', life: 3000 });
-};
-const items = ref([
-    {
-        label: '主页',
-        icon: 'pi pi-home'
-    },
-    {
-        label: '用户',
-        icon: 'pi pi-user',
-        items: [
-            {
-                label: '登录',
-                icon: 'pi pi-sign-in'
-            },
-            {
-                label: '注册',
-                icon: 'pi pi pi-plus-circle'
-            }
-        ]
-    },
-]);
+const toast = useToast();
 
 const user = reactive<any>({
     username: null,
@@ -42,27 +18,28 @@ const user = reactive<any>({
 });
 
 
-const UserToken = useTokenStore();
-UserToken.setToken("!xPucFegOlcGcKHSJefV0kuvuetiTokZ6qtpQozhA");
-
+const tokenStore = useTokenStore();
 
 async function initUser() {
-
-    await axios.post("/account/profile", { "token": UserToken.token }).then(res => {
-        let data = res.data
-        if (data.status == 200) {
-            user.username = data["username"]
-            user.email = data["email"]
-            user.addresses = data["addresses"]
-            user.default_address = data["default_address"]
-            user.avatar = data["avatar"]
-        } else {
-
-            toast.add({ severity: 'success', summary: '用户未登录', detail: '用户未登录', life: 3000 });
-            // 之后做重定向跳转
-        }
-    })
-
+    if (!tokenStore.isLoggedIn()) {
+        toast.add({ severity: 'error', summary: '错误', detail: '用户未登录！', life: 3000 });
+        await new Promise((resolve) => setTimeout(resolve, 3000))
+        return router.push("/")
+    }
+    const res = await axios.post("/account/profile", { "token": tokenStore.token })
+    let data = res.data
+    if (data.status == 200) {
+        user.username = data["username"]
+        user.email = data["email"]
+        user.addresses = data["addresses"]
+        user.default_address = data["default_address"]
+        user.avatar = data["avatar"]
+    } else {
+        toast.add({ severity: 'error', summary: '错误', detail: '登录密钥已过期，请重新登录！', life: 3000 });
+        await new Promise((resolve) => setTimeout(resolve, 3000))
+        tokenStore.removeToken()
+        router.push("/")
+    }
 }
 
 const visible = ref(false);
@@ -75,7 +52,7 @@ const address = ref("");
 async function update_user() {
     visible.value = false;
     let data: any = {};
-    data["token"] = UserToken.token
+    data["token"] = tokenStore.token
     if (password.value.length != 0) {
         data["password"] = md5(password.value);
     }
@@ -99,10 +76,9 @@ async function update_user() {
 }
 
 async function del_address(address: any) {
-
     await axios.post("/account/del_address", {
         "address": address,
-        "token": UserToken.token
+        "token": tokenStore.token
     }).then(res => {
         console.log(res.data);
         toast.add({ severity: 'success', summary: '地址', detail: '地址删除成功', life: 3000 });
@@ -113,7 +89,7 @@ async function del_address(address: any) {
 const orders = ref<any>([])
 async function get_products() {
     await axios.post("/order/all", {
-        "token": UserToken.token
+        "token": tokenStore.token
     }).then(res => {
         console.log(res.data)
         if (res.status == 200) {
@@ -126,18 +102,17 @@ async function get_products() {
 async function cancel_order(order_id: any) {
     await axios.post("/order/cancel", {
         "order_id": order_id,
-        "token": UserToken.token
+        "token": tokenStore.token
     }).then(res => {
         let data = res.data;
         if (data.status == 200) {
             window.location.reload();
         }
     })
-
 }
-onMounted(() => {
-    initUser();
-    get_products();
+onMounted(async () => {
+    await initUser();
+    await get_products();
 })
 const value = ref('货到付款');
 const options = ref(['货到付款', '在线支付']);
@@ -148,7 +123,7 @@ async function checkout(order_id: any) {
     }
     await axios.post("/order/pay", {
         "order_id": order_id,
-        "token": UserToken.token
+        "token": tokenStore.token
     }).then(res => {
         let data = res.data;
         if (data.status == 200) {
@@ -167,7 +142,7 @@ async function modify_address(order_id: any) {
     await axios.post("/order/modify_address", {
         "order_id": order_id,
         "address": address.value,
-        "token": UserToken.token
+        "token": tokenStore.token
     }).then(res => {
         let data = res.data;
         if (data.status == 200) {
@@ -176,37 +151,18 @@ async function modify_address(order_id: any) {
         }
     })
 }
-
 </script>
 
 <template>
-    <Toast class="max-w-90%"></Toast>
-    <main class="flex flex-col">
-        <Menubar :model="items" class="!border-x-none !b-rd-0" breakpoint="600px">
-            <template #item="{ item, props, hasSubmenu, root }">
-                <a v-ripple class="flex align-items-center" v-bind="props.action">
-                    <span :class="item.icon"></span>
-                    <span class="ml-2">{{ item.label }}</span>
-                    <Badge v-if="item.badge" :class="{ 'ml-auto': !root, 'ml-2': root }" :value="item.badge" />
-                    <span v-if="item.shortcut"
-                        class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1">{{
-                            item.shortcut }}</span>
-                    <i v-if="hasSubmenu"
-                        :class="['pi pi-angle-down', { 'pi-angle-down ml-2': root, 'pi-angle-right ml-auto': !root }]"></i>
-                </a>
-            </template>
-            <template #end>
-                <div class="flex align-items-center gap-2">
-                    <InputText placeholder="Search" type="text" class="w-8rem sm:w-auto" />
-                </div>
-            </template>
-        </Menubar>
+    <div class="flex flex-col">
+        <Toast class="max-w-90%"></Toast>
+        <Header></Header>
 
         <div class="flex justify-center w-full h-full">
             <div class="flex flex-col w-full max-w-960px gap-6">
                 <div class="mt-4 flex flex-col items-center">
                     <Avatar :image="user.avatar" class="mb-4" size="xlarge" shape="circle" />
-                    <Button class="w-20" label="修改" @click="visible = true" />
+                    <Button class="w-20" label="修改" @click="visible = true"></Button>
                     <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
                         <span class="p-text-secondary block mb-5">Update your information.</span>
                         <div class="flex align-items-center gap-3 mb-3">
@@ -291,5 +247,7 @@ async function modify_address(order_id: any) {
 
             </div>
         </div>
-    </main>
+
+        <Footer></Footer>
+    </div>
 </template>
