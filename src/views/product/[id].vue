@@ -68,7 +68,7 @@ onMounted(async () => {
                     <div class="inline-flex flex-wrap gap-2">
                         <Tag v-for="category in product.categories" :value="`#${category}`"></Tag>
                     </div>
-                    <div class="my-2 flex flex-col gap-3 bg-dark w-full">
+                    <div class="my-2 flex flex-col gap-3 bg-coolGray w-full">
                         <div class="inline-flex accent-coolgray gap-5 items-start px-8 py-2 mt-2">
                             <h3 class="m-0">定价</h3>
                             <span class="text-xl text-red">￥{{ product.price }}</span>

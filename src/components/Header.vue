@@ -53,6 +53,14 @@ else
                 router.push("/cart")
             }
         },
+        {
+            label: '退出登录',
+            icon: 'pi pi-sign-out',
+            command: () => {
+                tokenStore.removeToken()
+                router.go(0)
+            }
+        },
     ]
 
 const items = ref([
