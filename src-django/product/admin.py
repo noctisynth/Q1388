@@ -6,7 +6,7 @@ from .models import Product, Category
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "price", "quantity")
-    list_filter = ("categories",)
+    list_filter = ("category",)
 
 
 class CategoryAdmin(admin.ModelAdmin):
