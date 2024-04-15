@@ -87,7 +87,7 @@ async function login() {
             'severity': 'success', 'summary': '成功', 'detail': '登录成功！', 'life': 3000
         })
         await new Promise((resolve) => setTimeout(resolve, 3000))
-        window.location.reload();
+        router.go(0);
         showLogin.value = false
     } else {
         console.log(res.data)
@@ -114,8 +114,8 @@ async function register() {
             'severity': 'success', 'summary': '成功', 'detail': res.data.message, 'life': 3000
         })
         await new Promise((resolve) => setTimeout(resolve, 3000))
-        window.location.reload();
         showRegister.value = false
+        router.go(0);
     } else {
         toast.add({
             'severity': 'error', 'summary': '失败', 'detail': res.data.message, 'life': 3000
@@ -165,7 +165,7 @@ async function register() {
         </div>
         <div class="flex justify-end gap-2">
             <Button type="button" label="取消" severity="secondary" @click="showRegister = false"></Button>
-            <Button @click="register" type="button" label="登录"></Button>
+            <Button @click="register" type="button" label="注册"></Button>
         </div>
     </Dialog>
     <Menubar :model="items" class="!border-x-none !b-rd-0" breakpoint="600px">

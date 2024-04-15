@@ -4,8 +4,10 @@ import Button from "primevue/button";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const loadding = ref<boolean>(true)
+const router = useRouter()
 const toast = useToast()
 const recommends = ref();
 const products = ref()
@@ -60,7 +62,8 @@ onMounted(async () => {
               <div class="flex justify-between items-center">
                 <div class="mt-0 font-semibold text-xl">${{ slotProps.data.price }}</div>
                 <span>
-                  <Button icon="pi pi-shopping-cart" class="ml-2"></Button>
+                  <Button @click="router.push('/product/' + slotProps.data.id)" icon="pi pi-shopping-cart"
+                    class="ml-2"></Button>
                 </span>
               </div>
             </div>
@@ -91,7 +94,7 @@ onMounted(async () => {
                     <div class="flex flex-col md:items-end gap-5">
                       <span class="text-xl font-semibold text-900">${{ item.price }}</span>
                       <div class="flex flex-row w-full justify-end">
-                        <Button icon="pi pi-shopping-cart" label="购买"
+                        <Button icon="pi pi-shopping-cart" label="购买" @click="router.push('/product/' + item.id)"
                           class="flex-auto md:flex-initial whitespace-nowrap"></Button>
                       </div>
                     </div>

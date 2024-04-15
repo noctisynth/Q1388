@@ -28,5 +28,5 @@ urlpatterns = [
     path("product/", include("product.urls")),
     path("shopping_cart/", include("shopping_cart.urls")),
     path("order/", include("order.urls")),
-    re_path("^(?P<path>.*)$", serve, {'document_root': settings.MEDIA_ROOT})
+    re_path("^(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
 ]

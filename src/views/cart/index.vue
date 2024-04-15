@@ -3,8 +3,10 @@ import { useTokenStore } from '@/stores/token';
 import axios from '@/util/axiosInstance';
 import { onMounted, ref } from 'vue';
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 const UserToken = useTokenStore();
+const router = useRouter()
 const cart_items = ref<any[]>([]);
 const total_price = ref(0);
 
@@ -31,8 +33,8 @@ async function add_product(product_id: any) {
         "token": UserToken.token
     }).then(res => {
         let data = res.data;
-        if (data.status == 200) {
-            window.location.reload();
+        if (data.status === 200) {
+            router.go(0)
         }
     })
 
@@ -45,11 +47,10 @@ async function del_product(product_id: any) {
     }).then(res => {
         let data = res.data;
         console.log(data)
-        if (data.status == 200) {
-            window.location.reload();
+        if (data.status === 200) {
+            router.go(0)
         }
     })
-
 }
 async function checkout() {
     await axios.post("/order/checkout", {
@@ -57,9 +58,8 @@ async function checkout() {
     }).then(res => {
         let data = res.data
         console.log(data)
-        if (data.status == 200) {
-            // 跳转到 proflie即可 全部在profle处理
-            window.location.href = "/profile";
+        if (data.status === 200) {
+            router.push("/profile")
         } else {
             alert("结算错误")
         }

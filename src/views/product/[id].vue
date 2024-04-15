@@ -1,17 +1,35 @@
 <script setup lang="ts">
 import axios from '@/util/axiosInstance';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useTokenStore } from '@/stores/token';
 
 const route = useRoute()
+const router = useRouter()
 const toast = useToast()
+const tokenStore = useTokenStore()
 
 const loadding = ref<boolean>(true)
 const product = ref()
 
 const recommends = ref()
+
+async function add() {
+    const res = await axios.post("/shopping_cart/add", {
+        product_id: route.params.id,
+        quantity: product.value.quantity,
+        token: tokenStore.token
+    })
+    if (res.data.status === 200) {
+        toast.add({ 'severity': 'success', 'summary': '成功', 'detail': '加入购物车成功！', 'life': 3000 })
+        await new Promise((resolve) => setTimeout(resolve, 3000))
+        router.push("/cart")
+    } else {
+        toast.add({ 'severity': 'error', 'summary': '失败', 'detail': '数据加载失败:' + res.data.message, 'life': 3000 })
+    }
+}
 
 onMounted(async () => {
     const res = await axios.post("/product/detail", {
@@ -20,7 +38,14 @@ onMounted(async () => {
     if (res.data.status === 200) {
         product.value = res.data.product
     } else {
-        toast.add({ 'severity': 'error', 'summary': '失败', 'detail': '数据加载失败:' + res.data.message, 'life': 3000 })
+        return toast.add({ 'severity': 'error', 'summary': '失败', 'detail': '数据加载失败:' + res.data.message, 'life': 3000 })
+    }
+
+    const ans = await axios.get("/product/all")
+    if (ans.data.status === 200) {
+        recommends.value = ans.data.products
+    } else {
+        return toast.add({ 'severity': 'error', 'summary': '失败', 'detail': '数据加载失败:' + res.data.message, 'life': 3000 })
     }
     loadding.value = false
 })
@@ -53,9 +78,8 @@ onMounted(async () => {
                             <span>{{ product.quantity }} 件</span>
                         </div>
                     </div>
-                    <div class="flex justify-between w-full py-2 mt-3">
-                        <Button severity="secondary" label="加入购物车"></Button>
-                        <Button label="立即下单"></Button>
+                    <div class="flex justify-end w-full py-2 mt-3">
+                        <Button @click="add" label="加入购物车"></Button>
                     </div>
                 </div>
             </div>
