@@ -27,8 +27,14 @@ async function add() {
         await new Promise((resolve) => setTimeout(resolve, 3000))
         router.push("/cart")
     } else {
-        toast.add({ 'severity': 'error', 'summary': '失败', 'detail': '数据加载失败:' + res.data.message, 'life': 3000 })
+        toast.add({ 'severity': 'error', 'summary': '失败', 'detail': '账号未登录，请先登录账号。', 'life': 3000 })
     }
+}
+
+const goNext = (id: string) => {
+    router.push('/product/' + id);
+    window.location.replace('#/product/' + id)
+    window.location.reload()
 }
 
 onMounted(async () => {
@@ -55,6 +61,7 @@ onMounted(async () => {
     <div class="h-full w-full flex flex-col">
         <Toast></Toast>
         <Header></Header>
+        <Search></Search>
         <section v-if="!loadding" class="flex justify-center items-center mt-6 mb-2 py-4 w-full">
             <div class="m-2 flex flex-row flex-wrap-reverse gap-8 items-center justify-center">
                 <div class="flex justify-center w-full max-w-300px">
@@ -93,9 +100,8 @@ onMounted(async () => {
         </section>
         <Divider><i class="pi pi-heart-fill"></i> 你可能还喜欢</Divider>
         <div class="flex mt-2 p-4 flex-row flex-wrap items-center justify-around justify-start">
-
             <div v-for="product in recommends" class="m-1 mt-4">
-                <Card style="width: 25rem; overflow: hidden">
+                <Card @click="goNext(product.id)" style="width: 25rem; overflow: hidden">
                     <template #header>
                         <img class="h-96 w-full" alt="user header" :src="product.pictures" />
                     </template>

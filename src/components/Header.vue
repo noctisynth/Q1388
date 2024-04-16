@@ -4,13 +4,16 @@ import axios from '@/util/axiosInstance';
 import Password from 'primevue/password';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
+const emit = defineEmits(['onSearch'])
 const router = useRouter()
+const route = useRoute()
 const tokenStore = useTokenStore()
 const toast = useToast()
 const showLogin = ref<boolean>(false)
 const showRegister = ref<boolean>(false)
+const input = ref()
 const username = ref<string | null>()
 const email = ref<string | null>()
 const password = ref<string | null>()
@@ -132,6 +135,12 @@ async function register() {
         await new Promise((resolve) => setTimeout(resolve, 3000))
     }
 }
+
+const search = () => {
+    if (route.path !== '/product' && route.path !== '/product/')
+        router.push('/product?key=' + input.value)
+    emit('onSearch', input.value)
+}
 </script>
 
 <template>
@@ -192,7 +201,7 @@ async function register() {
         </template>
         <template #end>
             <div class="flex align-items-center gap-2">
-                <InputText placeholder="Search" type="text" class="w-8rem sm:w-auto" />
+                <InputText @keypress.enter="search" v-model="input" placeholder="搜索" type="text" class="w-8rem sm:w-auto" />
             </div>
         </template>
     </Menubar>
