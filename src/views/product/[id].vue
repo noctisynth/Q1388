@@ -37,6 +37,11 @@ const goNext = (id: string) => {
     window.location.reload()
 }
 
+const parse = (value: any) => {
+    // return JSON.parse(value)
+    return [1, 2, 3, 4]
+}
+
 onMounted(async () => {
     const res = await axios.post("/product/detail", {
         product_id: route.params.id
@@ -98,6 +103,17 @@ onMounted(async () => {
         <section v-else class="flex flex-col items-center justify-center m-10">
             <ProgressSpinner></ProgressSpinner>
         </section>
+        <Divider><i class="pi pi-shopping-cart"></i> 商品规格</Divider>
+        <div class="flex w-full justify-center items-center">
+            <div class="flex flex-col w-full max-w-600px">
+                <div v-if="product" class="flex flex-col items-start w-full">
+                    <span v-for="param in parse(product.spec_param)" class="text-coolGray">{{ param }}</span>
+                </div>
+                <div v-else>
+                    <span>暂无商品数据</span>
+                </div>
+            </div>
+        </div>
         <Divider><i class="pi pi-heart-fill"></i> 你可能还喜欢</Divider>
         <div class="flex mt-2 p-4 flex-row flex-wrap items-center justify-around justify-start">
             <div v-for="product in recommends" class="m-1 mt-4">
