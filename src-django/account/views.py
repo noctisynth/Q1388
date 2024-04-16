@@ -141,6 +141,8 @@ def update(request: HttpRequest):
                     user_adress = UserAddress()
                     user_adress.user = ua
                     user_adress.location = addresses
+                    if len(ua.default_address) == 0:
+                        ua.default_address = addresses
                     user_adress.save()
             ua.save()
 

@@ -30,11 +30,17 @@ const responsiveOptions = ref([
 ]);
 
 onMounted(async () => {
-  const res = await axios.get("/product/all")
+  const res = await axios.get("/product/recommend")
   if (res.data) {
-    products.value = res.data.products
+
     recommends.value = res.data.products
     loadding.value = false
+  } else {
+    toast.add({ 'severity': 'error', 'summary': '失败', 'detail': "数据加载失败:" + res.data.message, 'life': 3000 })
+  }
+  const d = await axios.get("/product/all")
+  if (d.data) {
+    products.value = d.data.products
   } else {
     toast.add({ 'severity': 'error', 'summary': '失败', 'detail': "数据加载失败:" + res.data.message, 'life': 3000 })
   }
@@ -45,7 +51,7 @@ onMounted(async () => {
   <main class="flex flex-col">
     <Toast class="max-w-90%"></Toast>
     <Header></Header>
-    <div class="flex justify-center w-full h-full">
+    <div class="flex justify-center w-full h-full flex-col items-center">
       <div class="flex flex-col w-full max-w-960px gap-6" v-if="!loadding">
         <Carousel :value="recommends" :numVisible="3" :numScroll="3" :responsiveOptions="responsiveOptions" circular
           :autoplayInterval="3000">
@@ -54,8 +60,7 @@ onMounted(async () => {
               <div class="mb-3">
                 <div class="relative mx-auto">
                   <img :src="slotProps.data.pictures" :alt="slotProps.data.name" class="w-full b-rd" />
-                  <Tag :value="slotProps.data.categories[0]" severity="info" class="absolute"
-                    style="left:5px; top: 5px" />
+                  <Tag :value="slotProps.data.category" severity="info" class="absolute" style="left:5px; top: 5px" />
                 </div>
               </div>
               <div class="mb-3 font-medium">{{ slotProps.data.name }}</div>
@@ -69,7 +74,31 @@ onMounted(async () => {
             </div>
           </template>
         </Carousel>
-        <DataView :value="products" dataKey="id">
+      </div>
+      <div class="flex justify-center items-center" v-else>
+        <ProgressSpinner></ProgressSpinner>
+      </div>
+      <div class="flex mt-2 p-4 flex-row flex-wrap items-center justify-around justify-start">
+
+        <div v-for="product in products" class="m-1 mt-4">
+          <Card style="width: 25rem; overflow: hidden">
+            <template #header>
+              <img class="h-96 w-full" alt="user header" :src="product.pictures" />
+            </template>
+            <template #title>{{ product.name }}</template>
+            <template #footer>
+              <div class="text-2xl text-orange">
+
+                ￥ {{ product.price }}
+              </div>
+            </template>
+          </Card>
+        </div>
+
+
+
+
+        <!-- <DataView :value="products" dataKey="id">
           <template #empty>
             <div class="flex items-center justify-center">暂无数据。</div>
           </template>
@@ -80,7 +109,7 @@ onMounted(async () => {
                   :class="{ 'b-t-1 surface-border': index !== 0 }">
                   <div class="md:w-10rem relative">
                     <img class="block xl:block mx-auto b-rd w-full" :src="item.pictures" :alt="item.name" />
-                    <Tag :value="item.categories[0]" severity="info" class="absolute" style="left: 4px; top: 4px">
+                    <Tag :value="item.category" severity="info" class="absolute" style="left: 4px; top: 4px">
                     </Tag>
                   </div>
                   <div class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-4">
@@ -103,10 +132,7 @@ onMounted(async () => {
               </div>
             </div>
           </template>
-        </DataView>
-      </div>
-      <div class="flex justify-center items-center" v-else>
-        <ProgressSpinner></ProgressSpinner>
+        </DataView> -->
       </div>
     </div>
     <Footer></Footer>
