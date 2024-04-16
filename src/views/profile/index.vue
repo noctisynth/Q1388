@@ -163,8 +163,8 @@ const expandedRows = ref({});
                 <div class="mt-4 flex flex-col items-center">
                     <Avatar :image="user.avatar" class="mb-4" size="xlarge" shape="circle" />
                     <Button class="w-20" label="修改" @click="visible = true"></Button>
-                    <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
-                        <span class="p-text-secondary block mb-5">Update your information.</span>
+                    <Dialog v-model:visible="visible" modal header="编辑信息" :style="{ width: '25rem' }">
+                        <span class="p-text-secondary block mb-5">更新你的个人信息</span>
                         <div class="flex align-items-center gap-3 mb-3">
                             <label for="password" class="font-semibold w-6rem">密码</label>
                             <InputText id="password" class="flex-auto" autocomplete="off" v-model="password" />

@@ -28,6 +28,8 @@ declare module 'vue' {
     Search: typeof import('./src/components/Search.vue')['default']
     SelectButton: typeof import('primevue/selectbutton')['default']
     Slider: typeof import('primevue/slider')['default']
+    TabPanel: typeof import('primevue/tabpanel')['default']
+    TabView: typeof import('primevue/tabview')['default']
     Tag: typeof import('primevue/tag')['default']
   }
 }
