@@ -51,6 +51,7 @@ onMounted(async () => {
   <main class="flex flex-col">
     <Toast class="max-w-90%"></Toast>
     <Header></Header>
+    <Search></Search>
     <div class="flex justify-center w-full h-full flex-col items-center">
       <div class="flex flex-col w-full max-w-960px gap-6" v-if="!loadding">
         <Carousel :value="recommends" :numVisible="3" :numScroll="3" :responsiveOptions="responsiveOptions" circular
@@ -81,58 +82,18 @@ onMounted(async () => {
       <div class="flex mt-2 p-4 flex-row flex-wrap items-center justify-around justify-start">
 
         <div v-for="product in products" class="m-1 mt-4">
-          <Card style="width: 25rem; overflow: hidden">
+          <Card @click="router.push('/product/' + product.id)" style="width: 25rem; overflow: hidden">
             <template #header>
-              <img class="h-96 w-full" alt="user header" :src="product.pictures" />
+              <img class="h-96 w-full" :alt="product.name" :src="product.pictures" />
             </template>
             <template #title>{{ product.name }}</template>
             <template #footer>
               <div class="text-2xl text-orange">
-
                 ￥ {{ product.price }}
               </div>
             </template>
           </Card>
         </div>
-
-
-
-
-        <!-- <DataView :value="products" dataKey="id">
-          <template #empty>
-            <div class="flex items-center justify-center">暂无数据。</div>
-          </template>
-          <template #list="slotProps">
-            <div class="grid">
-              <div v-for="(item, index) in slotProps.items" :key="index">
-                <div class="flex flex-col sm:flex-row sm:items-center p-4 gap-3"
-                  :class="{ 'b-t-1 surface-border': index !== 0 }">
-                  <div class="md:w-10rem relative">
-                    <img class="block xl:block mx-auto b-rd w-full" :src="item.pictures" :alt="item.name" />
-                    <Tag :value="item.category" severity="info" class="absolute" style="left: 4px; top: 4px">
-                    </Tag>
-                  </div>
-                  <div class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-4">
-                    <div class="flex flex-row md:flex-col justify-between items-start gap-2">
-                      <div>
-                        <div class="text-lg font-medium text-900 mt-2">{{ item.name }}</div>
-                        <div class="text-sm mt-2 text-coolGray">{{ item.detail }}</div>
-                      </div>
-                      <div></div>
-                    </div>
-                    <div class="flex flex-col md:items-end gap-5">
-                      <span class="text-xl font-semibold text-900">${{ item.price }}</span>
-                      <div class="flex flex-row w-full justify-end">
-                        <Button icon="pi pi-shopping-cart" label="购买" @click="router.push('/product/' + item.id)"
-                          class="flex-auto md:flex-initial whitespace-nowrap"></Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </template>
-        </DataView> -->
       </div>
     </div>
     <Footer></Footer>
