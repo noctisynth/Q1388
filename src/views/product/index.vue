@@ -27,8 +27,9 @@ const refresh = async () => {
 
 const filters = ref({
     name: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    category: { value: null, matchMode: FilterMatchMode.EQUALS },
+    category: { value: (route.query.category || null), matchMode: FilterMatchMode.EQUALS },
 });
+
 
 const search = async (key: string) => {
     loadding.value = true
@@ -61,8 +62,8 @@ onMounted(async () => {
         <Header @on-search="(key: any) => { search(key) }"></Header>
         <Search @on-search="(key: any) => { search(key) }"></Search>
         <div class="flex justify-center py-3rem max-w-full">
-            <DataTable dateKey="id" paginator :rows="10" class="max-w-960px w-full" :value="products"
-                :loading="loadding" v-model:filters="filters" filterDisplay="row">
+            <DataTable dateKey="id" paginator :rows="10" class=" max-w-90% w-full" :value="products" :loading="loadding"
+                v-model:filters="filters" filterDisplay="row">
                 <template #header>
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <span class="text-xl text-900 font-bold">产品</span>
@@ -84,7 +85,8 @@ onMounted(async () => {
                     <template #body="slotProps">
                         <div class="flex justify-center items-center flex-col gap-2"
                             @click="router.push('/product/' + slotProps.data.id)">
-                            <img :src="slotProps.data.pictures" :alt="slotProps.data.name" class="w-6rem b-rd" />
+                            <Image v-if="slotProps.data.pictures" :src="slotProps.data.pictures"
+                                :alt="slotProps.data.comment" image-class="w-6rem b-rd" class="w-6rem b-rd" preview />
                             <span class="text-coolGray text-xs">{{ slotProps.data.comment }}</span>
                         </div>
                     </template>

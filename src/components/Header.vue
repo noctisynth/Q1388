@@ -90,6 +90,9 @@ const search = () => {
 
 <template>
     <Menubar :model="items" class="!border-x-none !b-rd-0" breakpoint="600px">
+        <template #start>
+            <img alt="Django Shop" src="/favicon.png" class="w-10"></img>
+        </template>
         <template #item="{ item, props, hasSubmenu, root }">
             <a v-ripple class="flex align-items-center" v-bind="props.action">
                 <span :class="item.icon"></span>
