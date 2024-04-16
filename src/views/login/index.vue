@@ -75,7 +75,7 @@ async function register() {
     <div class="w-full h-full flex flex-col bg-gray-200">
         <Toast></Toast>
         <Header></Header>
-        <div class="flex justify-center items-center my-2rem mx-1.5rem gap-3rem py-2rem">
+        <div class="flex flex-1 justify-center items-center my-2rem mx-1.5rem gap-3rem py-2rem">
             <section class="max-w-2xl w-600px">
                 <Card class="w-full">
                     <template #content>

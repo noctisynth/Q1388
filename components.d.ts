@@ -22,6 +22,7 @@ declare module 'vue' {
     Image: typeof import('primevue/image')['default']
     InputText: typeof import('primevue/inputtext')['default']
     Menubar: typeof import('primevue/menubar')['default']
+    Password: typeof import('primevue/password')['default']
     ProgressSpinner: typeof import('primevue/progressspinner')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

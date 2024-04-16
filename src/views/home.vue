@@ -66,7 +66,7 @@ onMounted(async () => {
               </div>
               <div class="mb-3 font-medium">{{ slotProps.data.name }}</div>
               <div class="flex justify-between items-center">
-                <div class="mt-0 font-semibold text-xl">${{ slotProps.data.price }}</div>
+                <div class="mt-0 font-semibold text-xl">￥{{ slotProps.data.price }}</div>
                 <span>
                   <Button @click="router.push('/product/' + slotProps.data.id)" icon="pi pi-shopping-cart"
                     class="ml-2"></Button>

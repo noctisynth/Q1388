@@ -16,7 +16,7 @@ def product2dict(p: Product):
         "name": p.name,
         "price": p.price,
         "quantity": p.quantity,
-        "spec_param": p.spec_param,
+        "spec_param": p.get_spec(),
         "category": p.category.name,  # type: ignore
         "comment": p.comment,
         "detail": p.detail,

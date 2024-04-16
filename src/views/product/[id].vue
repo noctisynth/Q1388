@@ -37,11 +37,6 @@ const goNext = (id: string) => {
     window.location.reload()
 }
 
-const parse = (value: any) => {
-    // return JSON.parse(value)
-    return [1, 2, 3, 4]
-}
-
 onMounted(async () => {
     const res = await axios.post("/product/detail", {
         product_id: route.params.id
@@ -107,7 +102,7 @@ onMounted(async () => {
         <div class="flex w-full justify-center items-center">
             <div class="flex flex-col w-full max-w-600px">
                 <div v-if="product" class="flex flex-col items-start w-full">
-                    <span v-for="param in parse(product.spec_param)" class="text-coolGray">{{ param }}</span>
+                    <span v-for="param in product.spec_param" class="text-coolGray">{{ param }}</span>
                 </div>
                 <div v-else>
                     <span>暂无商品数据</span>

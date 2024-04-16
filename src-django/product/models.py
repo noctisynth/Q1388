@@ -21,7 +21,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name="商品名称", unique=True)
     price = models.FloatField(verbose_name="价格")
     quantity = models.IntegerField(default=0, verbose_name="库存数量")
-    spec_param = models.CharField(max_length=300, verbose_name="规格参数")
+    spec_param = models.CharField(max_length=3000, verbose_name="规格参数")
     category = models.ForeignKey(
         Category, verbose_name="类别", on_delete=models.CASCADE, null=True
     )
@@ -35,3 +35,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_spec(self):
+        return self.spec_param.split("|")
