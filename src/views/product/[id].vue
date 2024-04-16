@@ -63,7 +63,7 @@ onMounted(async () => {
         <Header></Header>
         <Search></Search>
         <section v-if="!loadding" class="flex justify-center items-center mt-6 mb-2 py-4 w-full">
-            <div class="m-2 flex flex-row flex-wrap-reverse gap-8 items-center justify-center">
+            <div class="m-2 flex flex-row flex-wrap-reverse gap-8 items-center justify-center gap-5rem">
                 <div class="flex justify-center w-full max-w-300px">
                     <Image v-if="product.pictures" :src="product.pictures" :alt="product.comment"
                         image-class="max-w-full" class="max-w-full" preview />
@@ -75,7 +75,7 @@ onMounted(async () => {
                     <div class="inline-flex flex-wrap gap-2">
                         <Tag :value="product.category"></Tag>
                     </div>
-                    <div class="my-2 flex flex-col gap-3 bg-coolGray w-full">
+                    <div class="my-2 flex flex-col gap-3 b-rd bg-gray-300 w-full">
                         <div class="inline-flex accent-coolgray gap-5 items-start px-8 py-2 mt-2">
                             <h3 class="m-0">定价</h3>
                             <span class="text-xl text-red">￥{{ product.price }}</span>
