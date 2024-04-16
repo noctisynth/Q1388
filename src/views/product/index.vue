@@ -71,7 +71,8 @@ onMounted(async () => {
                 </template>
                 <Column field="name" header="名称" :showFilterMenu="false">
                     <template #body="slotProps">
-                        <div class="flex items-start flex-col gap-2">
+                        <div @click="router.push('/product/' + slotProps.data.id)"
+                            class="flex items-start flex-col gap-2">
                             <div>
                                 <h2 class="m-0 text-size-sm">{{ slotProps.data.name }}</h2>
                             </div>
@@ -81,7 +82,8 @@ onMounted(async () => {
                 </Column>
                 <Column header="图片">
                     <template #body="slotProps">
-                        <div class="flex justify-center items-center flex-col gap-2">
+                        <div class="flex justify-center items-center flex-col gap-2"
+                            @click="router.push('/product/' + slotProps.data.id)">
                             <img :src="slotProps.data.pictures" :alt="slotProps.data.name" class="w-6rem b-rd" />
                             <span class="text-coolGray text-xs">{{ slotProps.data.comment }}</span>
                         </div>
