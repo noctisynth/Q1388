@@ -64,7 +64,7 @@ onMounted(async () => {
         <Search></Search>
         <section v-if="!loadding" class="flex justify-center items-center mt-6 mb-2 py-4 w-full">
             <div class="m-2 flex flex-row flex-wrap-reverse gap-8 items-center justify-center">
-                <div class="flex justify-center w-full max-w-300px">
+                <div class="flex justify-center w-full max-w-500px">
                     <Image v-if="product.pictures" :src="product.pictures" :alt="product.comment"
                         image-class="max-w-full" class="max-w-full" preview />
                 </div>

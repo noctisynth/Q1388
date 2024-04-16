@@ -53,8 +53,8 @@ onMounted(async () => {
     <Header></Header>
     <Search></Search>
     <div class="flex justify-center w-full h-full flex-col items-center">
-      <div class="flex flex-col w-full max-w-960px gap-6" v-if="!loadding">
-        <Carousel :value="recommends" :numVisible="3" :numScroll="3" :responsiveOptions="responsiveOptions" circular
+      <div class="flex flex-col w-full max-w-auto gap-6" v-if="!loadding">
+        <Carousel :value="recommends" :numVisible="4" :numScroll="4" :responsiveOptions="responsiveOptions" circular
           :autoplayInterval="3000">
           <template #item="slotProps">
             <div class="border-1 surface-border b-rd m-2 p-3">

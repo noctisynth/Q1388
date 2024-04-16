@@ -187,6 +187,9 @@ const search = () => {
         </div>
     </Dialog>
     <Menubar :model="items" class="!border-x-none !b-rd-0" breakpoint="600px">
+        <template #start>
+            <img alt="Django Shop" src="/favicon.png" class="w-10"></img>
+        </template>
         <template #item="{ item, props, hasSubmenu, root }">
             <a v-ripple class="flex align-items-center" v-bind="props.action">
                 <span :class="item.icon"></span>
@@ -201,7 +204,8 @@ const search = () => {
         </template>
         <template #end>
             <div class="flex align-items-center gap-2">
-                <InputText @keypress.enter="search" v-model="input" placeholder="搜索" type="text" class="w-8rem sm:w-auto" />
+                <InputText @keypress.enter="search" v-model="input" placeholder="搜索" type="text"
+                    class="w-8rem sm:w-auto" />
             </div>
         </template>
     </Menubar>

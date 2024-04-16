@@ -245,7 +245,9 @@ const expandedRows = ref({});
                             <Column field="product.name" header="商品名称"></Column>
                             <Column class="ml-2" header="图片">
                                 <template #body="slotProps">
-                                    <img :src="slotProps.data.product.pictures" class="w-6rem border-round" />
+                                    <Image v-if="slotProps.data.product.pictures" :src="slotProps.data.product.pictures"
+                                        :alt="slotProps.data.product.comment" image-class="w-6rem b-rd"
+                                        class="w-6rem b-rd" preview />
                                 </template>
                             </Column>
                             <Column field="product.price" header="商品价格" sortable></Column>
