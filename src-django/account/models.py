@@ -6,9 +6,13 @@ class UserAccount(models.Model):
     username = models.CharField(
         max_length=30, verbose_name="用户名", unique=True, null=False
     )
-    password = models.CharField(max_length=50, verbose_name="密码", null=False)
+    password = models.CharField(max_length=200, verbose_name="密码", null=False)
     email = models.EmailField(max_length=254, verbose_name="邮件", default="")
-    avatar = models.CharField(max_length=254, verbose_name="头像", default="")
+    avatar = models.CharField(
+        max_length=254,
+        verbose_name="头像",
+        default="https://pic1.zhimg.com/v2-d52893c607cbd58ff48e2e08dcd72b2a_r.jpg",
+    )
     default_address = models.CharField(
         max_length=200, verbose_name="默认地址", default=""
     )
