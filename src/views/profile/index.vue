@@ -151,6 +151,25 @@ async function modify_address(order_id: any) {
     })
 }
 const expandedRows = ref({});
+const onUpload = () => {
+    toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
+};
+const avatar_upoloader = (event: any) => {
+    const file = event.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('token', tokenStore.token);
+    axios.post('/account/avatar', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }).then(res => {
+        console.log(res.data)
+        onUpload()
+        router.go(0)
+    })
+}
+
 </script>
 
 <template>
@@ -162,7 +181,9 @@ const expandedRows = ref({});
             <div class="flex flex-col w-full  gap-6">
                 <div class="mt-4 flex flex-col items-center">
                     <Avatar :image="user.avatar" class="mb-4" size="xlarge" shape="circle" />
-                    <Button class="w-20" label="修改" @click="visible = true"></Button>
+                    <FileUpload mode="basic" name="image" :custom-upload="true" @uploader="avatar_upoloader"
+                        accept="image/*" :maxFileSize="1000000" @upload="onUpload" :auto="true" chooseLabel="上传" />
+                    <Button class="mt-4 w-20" label="修改" @click="visible = true"></Button>
                     <Dialog v-model:visible="visible" modal header="编辑信息" :style="{ width: '25rem' }">
                         <span class="p-text-secondary block mb-5">更新你的个人信息</span>
                         <div class="flex align-items-center gap-3 mb-3">

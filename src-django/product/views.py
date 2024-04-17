@@ -20,7 +20,7 @@ def product2dict(p: Product):
         "category": p.category.name,  # type: ignore
         "comment": p.comment,
         "detail": p.detail,
-        "pictures": p.pictures,
+        "pictures": p.pictures.url,
     }
 
 

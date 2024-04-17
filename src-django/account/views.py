@@ -37,7 +37,6 @@ def add(request: HttpRequest):
             ua.username = username
             ua.password = make_password(password)
             ua.email = email
-            ua.avatar = "default_avatar.jpg"
             ua.save()
             return JsonResponse({"status": 200, "message": "用户创建成功"})
 
@@ -117,7 +116,6 @@ def update(request: HttpRequest):
     token = data.get("token")  # type: ignore
     password: str = data.get("password", "")
     email: str = data.get("email", "")
-    avatar: str = data.get("avatar", "")
     default_address: str = data.get("default_address", "")
     addresses: str = data.get("addresses", "")
 
@@ -131,8 +129,6 @@ def update(request: HttpRequest):
                 ua.password = make_password(password)
             if email:
                 ua.email = email
-            if avatar:
-                ua.avatar = avatar
             if default_address:
                 ua.default_address = default_address
             if addresses:
@@ -175,7 +171,7 @@ def profile(request: HttpRequest):
                 "status": 200,
                 "username": ua.username,
                 "email": ua.email,
-                "avatar": ua.avatar,
+                "avatar": ua.avatar.url,
                 "default_address": ua.default_address,
                 "addresses": ua.addresses,
             }
@@ -235,3 +231,23 @@ def del_address(request: HttpRequest):
             return JsonResponse({"status": 403, "message": "用户未登录"})
     else:
         return JsonResponse({"status": 400, "message": "未设置token"})
+
+
+@csrf_exempt
+def avatar(request: HttpRequest):
+    if request.method == "POST" and request.FILES["image"]:
+        token = request.POST.get("token", "")
+        if token:
+            ua = verify_session(token)
+            if ua:
+                image_file = request.FILES["image"]
+                ua.avatar = image_file  # type: ignore
+                ua.save()
+
+            else:
+                return JsonResponse({"status": 403, "message": "用户未登录"})
+        else:
+            return JsonResponse({"status": 400, "message": "未设置token"})
+
+        return JsonResponse({"success": 200})
+    return JsonResponse({"success": 40}, status=400)
